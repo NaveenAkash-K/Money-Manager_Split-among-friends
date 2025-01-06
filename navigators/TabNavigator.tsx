@@ -1,6 +1,5 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-
 import StatsScreen from '../screens/StatsScreen'; // Replace with your actual path
 import AccountsScreen from '../screens/AccountsScreen';   // Replace with your actual path
 import TransactionsScreen from '../screens/TransactionsScreen'; // Replace with your actual path
@@ -27,11 +26,13 @@ function TabNavigator() {
         <Tab.Navigator screenOptions={{headerLeft: headerLeftImage,
             tabBarStyle: styles.tabBar,
             tabBarLabelStyle: styles.tabBarLabel,
-            sceneStyle:{backgroundColor:"#fff"}
+            sceneStyle:{backgroundColor:"#fff"},
+            tabBarActiveTintColor: "#7637a6"
         }}>
             <Tab.Screen name="Transactions"
                         component={TransactionsScreen}
                         options={{
+                            headerShadowVisible: false,
                             tabBarIcon: ((props) =>
                                 <FontAwesome6 name="money-bill-transfer" size={20} color={props.color}/>)
                         }}/>

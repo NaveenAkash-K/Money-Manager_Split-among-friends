@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {
     StyleSheet,
     View,
@@ -12,9 +12,14 @@ import Colors from "../constants/Colors";
 import TransactionTypes from "../types/TransactionTypes";
 import AccountTypes from "../types/AccountTypes";
 import MiniStats from "../components/transactionsScreen/MiniStats";
+import TransactionListItem from "../components/transactionsScreen/TransactionListItem";
+import {FAB} from 'react-native-paper';
+import TransactionModal from "../components/transactionsScreen/TransactionModal";
 
 const TransactionsScreen = () => {
     // Static plain object array for transactions
+    const [isTransactionModalVisible, setIsTransactionModalVisible] = useState(false)
+
     const transactions = [
         {
             id: "income_1",
@@ -25,7 +30,7 @@ const TransactionsScreen = () => {
             description: undefined,
             type: TransactionTypes.Income,
             createdAt: new Date("2025-01-04"),
-            accountType: AccountTypes.Bank,
+            accountType: AccountTypes.Account,
         },
         {
             id: "expense_1",
@@ -56,7 +61,7 @@ const TransactionsScreen = () => {
             description: "Payment for project completion",
             type: TransactionTypes.Income,
             createdAt: new Date("2025-01-03"),
-            accountType: AccountTypes.PayPal,
+            accountType: AccountTypes.Cash,
         },
         {
             id: "expense_3",
@@ -100,77 +105,32 @@ const TransactionsScreen = () => {
     const groupedTransactions = groupTransactionsByDate();
 
     const renderTransaction = ({item}: { item: typeof transactions[0] }) => {
-        return (
-            <Pressable
-                android_ripple={{color: 'black', borderless: true}}
-                onPress={() => {
-                }}
-                // background={TouchableNativeFeedback.Ripple(Colors.grey[300], true)}
-                style={[styles.transactionItem, {}]}
-            >
-
-                <View style={styles.transactionDetails}>
-                    {/* Left section with category and sub-category */}
-                    <View style={styles.categoryContainer}>
-                        <Text style={styles.category} numberOfLines={1}>
-                            {item.category}
-                        </Text>
-                        {item.subCategory && (
-                            <Text style={styles.subCategory}>{item.subCategory}</Text>
-                        )}
-                    </View>
-
-                    {/* Right section with name and description */}
-                    <View style={styles.nameContainer}>
-                        <Text style={styles.name} numberOfLines={1}>
-                            {item.name}
-                        </Text>
-                        {item.description && (
-                            <Text style={styles.description} numberOfLines={1}>
-                                {item.description}
-                            </Text>
-                        )}
-                    </View>
-                </View>
-
-                {/* Amount section */}
-                <Text
-                    style={[
-                        styles.amount,
-                        item.type === TransactionTypes.Income ? styles.incomeText : styles.expenseText,
-                    ]}
-                >
-                    {item.type === TransactionTypes.Income ? `₹ ${item.amount}` : `₹ ${Math.abs(item.amount)}`}
-                </Text>
-
-            </Pressable>
-        );
-    };
-
-    const renderHeader = ({section}: { section: { title: string } }) => {
-        return (
-            <View style={styles.header}>
-                <Text style={styles.headerText}>{section.title}</Text>
-            </View>
-        );
-    };
-
-    const renderSectionFooter = () => {
-        return <View style={styles.divider}/>;
+        return <TransactionListItem data={item}/>
     };
 
     return (
         <View style={styles.transactionsScreen}>
+            <TransactionModal isVisible={isTransactionModalVisible} onClose={() => {
+                setIsTransactionModalVisible(false)
+            }}/>
+
             <MiniStats/>
             <SectionList
                 sections={groupedTransactions}
                 renderItem={renderTransaction}
-                renderSectionHeader={renderHeader}
-                renderSectionFooter={renderSectionFooter}
+                renderSectionHeader={({section}) => <View style={styles.header}>
+                    <Text style={styles.headerText}>{section.title}</Text>
+                </View>}
+                renderSectionFooter={() => <View style={styles.divider}/>}
                 keyExtractor={(item) => item.id}
                 style={styles.transactionsList}
                 contentContainerStyle={styles.listContent}
                 showsVerticalScrollIndicator={false}
+            />
+            <FAB
+                icon="plus"
+                style={styles.fab}
+                onPress={() => setIsTransactionModalVisible(true)}
             />
         </View>
     );
@@ -180,8 +140,8 @@ const styles = StyleSheet.create({
     transactionsScreen: {
         flex: 1,
         backgroundColor: Colors.background,
-        paddingHorizontal: 16,
-        paddingTop: 8,
+        // paddingHorizontal: 16,
+        // paddingTop: 8,
     },
     transactionsList: {
         flex: 1,
@@ -190,66 +150,9 @@ const styles = StyleSheet.create({
     listContent: {
         paddingBottom: 16,
     },
-    transactionItem: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        paddingVertical: 6,
-        paddingHorizontal: 8,
-        borderRadius: 6,
-        marginBottom: 2,
-    },
-    transactionDetails: {
-        flex: 1,
-        flexDirection: "row",
-        marginRight: 8,
-    },
-    categoryContainer: {
-        justifyContent: "center",
-        marginRight: 12, // Add some space between category and name
-        width: 80, // Fixed width for category
-    },
-    nameContainer: {
-        justifyContent: "center",
-        flex: 1, // Ensure text fits and adjusts based on screen width
-    },
-    category: {
-        fontSize: 12,
-        color: Colors.grey[600],
-        fontWeight: "500",
-        overflow: "hidden", // Prevent text overflow
-        textOverflow: "ellipsis", // Ellipsis for long category names
-    },
-    subCategory: {
-        fontSize: 10,
-        color: Colors.grey[500],
-        fontWeight: "400",
-        marginTop: 2,
-    },
-    name: {
-        fontSize: 12,
-        fontWeight: "600",
-        color: Colors.onSurface,
-    },
-    description: {
-        fontSize: 12,
-        color: Colors.grey[500],
-        marginTop: 2,
-    },
-    amount: {
-        fontSize: 12,
-        fontWeight: "500",
-        textAlign: "right", // Align amount to the right
-    },
-    incomeText: {
-        color: Colors.income.main,
-    },
-    expenseText: {
-        color: Colors.expense.main,
-    },
     header: {
         paddingVertical: 4,
-        paddingHorizontal: 0,
+        paddingHorizontal: 18,
         borderRadius: 8,
         marginBottom: 8,
     },
@@ -262,6 +165,12 @@ const styles = StyleSheet.create({
         height: 1,
         backgroundColor: Colors.grey[400],
         marginVertical: 8, // Add some vertical margin for spacing after each section
+    },
+    fab: {
+        position: 'absolute',
+        margin: 16,
+        right: 0,
+        bottom: 0,
     },
 });
 

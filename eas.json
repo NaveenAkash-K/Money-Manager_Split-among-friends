@@ -1,0 +1,23 @@
+{
+  "cli": {
+    "version": ">= 12.3.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "android": {
+      "developmentClient": true,
+      "releaseChannel": "preview",
+      "minify": false
+    },
+    "production": {
+      "autoIncrement": true
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

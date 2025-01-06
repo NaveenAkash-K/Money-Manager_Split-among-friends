@@ -32,7 +32,7 @@ const MiniStats = () => {
                     <Text style={styles.statTitle}>Total</Text>
                     <Text style={styles.statValue}>₹5,000</Text>
                 </View>
-                <View style={styles.divider} />
+                <View style={styles.divider}/>
                 <View style={styles.statCard}>
                     <Text style={styles.statTitle}>Balance</Text>
                     <Text style={styles.statValue}>₹5,000</Text>
@@ -75,7 +75,12 @@ const styles = StyleSheet.create({
     miniStats: {
         borderBottomLeftRadius: 15,
         borderBottomRightRadius: 15,
-        backgroundColor: '#f9f9f9',
+        backgroundColor: '#fff',
+        shadowColor: Colors.grey["400"],
+        // borderBottomWidth: 0.5,
+        borderColor: Colors.grey["400"],
+        shadowOffset: {width: 0, height: 10},
+        elevation:4
         // paddingVertical: 10,
     },
     topRow: {
@@ -85,7 +90,7 @@ const styles = StyleSheet.create({
     },
     statCard: {
         // paddingVertical: 10,
-        paddingTop:10,
+        paddingTop: 10,
         paddingHorizontal: 15,
         alignItems: 'center',
     },
@@ -147,7 +152,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         // marginTop: 10,
         // backgroundColor:"blue",
-        paddingBottom:5,
+        paddingBottom: 5,
     },
 });
 
