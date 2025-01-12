@@ -5,37 +5,36 @@ import TransactionTypes from "../types/TransactionTypes";
 import Friend from "./Friend";
 
 class Debt extends Transaction {
+    static allDebts: Debt[] = [];
     debtType: DebtTypes;
     accountType: AccountTypes;
-    to: Friend;
+    debtPerson: Friend;
 
     constructor(
-        category: string,
         name: string,
         amount: number,
         accountType: AccountTypes,
+        date: Date,
         debtType: DebtTypes,
-        to: Friend,
+        debtPerson: Friend,
         description?: string,
-        subCategory?: string
     ) {
-        super(category, name, amount, TransactionTypes.Debt, description, subCategory);
+        super(name, amount, TransactionTypes.Debt, date, undefined, description);
         this.debtType = debtType;
         this.accountType = accountType;
-        this.to = to;
+        this.debtPerson = debtPerson;
+
+        Debt.allDebts.push(this);
     }
 
-    summary(): string {
-        const debtStatus = this.debtType === DebtTypes.Owe ? 'I owe' : 'Someone owes me';
-        return `
-      Transaction: ${this.name} (Debt)
-      Amount: ₹${this.amount}
-      Debt Status: ${debtStatus}
-      Category: ${this.category}${this.subCategory ? ` > ${this.subCategory}` : ''}
-      Description: ${this.description || 'N/A'}
-      Created At: ${this.createdAt}
-    `;
+    static getTotalAmountToBePayed = () => {
+
     }
+
+    static getTotalAmountToGetPayed = () => {
+
+    }
+
 }
 
 export default Debt;

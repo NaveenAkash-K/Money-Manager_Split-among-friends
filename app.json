@@ -30,6 +30,15 @@
       "eas": {
         "projectId": "8220327d-8452-4e6d-aab1-d8b913b695bc"
       }
-    }
+    },
+    "plugins": [
+      [
+        "expo-secure-store",
+        {
+          "configureAndroidBackup": true,
+          "faceIDPermission": "Allow $(PRODUCT_NAME) to access your Face ID biometric data."
+        }
+      ]
+    ]
   }
 }

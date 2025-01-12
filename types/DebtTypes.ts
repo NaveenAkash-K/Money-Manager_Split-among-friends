@@ -1,6 +1,6 @@
 enum DebtTypes {
     Owe = "Owe",
-    Owed = "Owed"
+    Owes = "Owes"
 }
 
 export default DebtTypes;

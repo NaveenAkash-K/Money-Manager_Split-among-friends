@@ -23,11 +23,12 @@ function TabNavigator() {
     }
 
     return (
-        <Tab.Navigator screenOptions={{headerLeft: headerLeftImage,
+        <Tab.Navigator screenOptions={{
+            headerLeft: headerLeftImage,
             tabBarStyle: styles.tabBar,
             tabBarLabelStyle: styles.tabBarLabel,
-            sceneStyle:{backgroundColor:"#fff"},
-            tabBarActiveTintColor: "#7637a6"
+            sceneStyle: {backgroundColor: "#fff"},
+            tabBarActiveTintColor: "#3b5fff",
         }}>
             <Tab.Screen name="Transactions"
                         component={TransactionsScreen}

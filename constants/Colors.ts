@@ -36,6 +36,8 @@ const Colors = {
         900: '#212121', // Very dark grey
     },
 
+    rippleColor: "rgba(0, 0, 0, 0.05)",
+
     // Additional Colors
     success: '#4CAF50', // Success green
     warning: '#FFC107', // Warning yellow

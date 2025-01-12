@@ -1,6 +1,9 @@
 import {create} from 'zustand';
-import {persist, createJSONStorage} from 'zustand/middleware';
+import {createJSONStorage} from 'zustand/middleware';
+import {persist} from 'expo-zustand-persist';
 import Friend from "../models/Friend";
+import secureStorage from "../secureStorage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface FriendsStore {
     friends: Friend[];
@@ -17,10 +20,11 @@ const useFriendsStore = create(
             // Functions
             addFriend: (friend: Friend) => set((state) => ({friends: [...state.friends, friend]})),
             removeFriend: (id: string) => set((state) => ({friends: state.friends.filter(friend => friend.id !== id)})),
+            // clearFriend:() => set(state => ({friends: []}))
         }),
         {
             name: 'friendsStore',
-            storage: createJSONStorage(() => localStorage),
+            storage: createJSONStorage(() => AsyncStorage),
         }
     )
 );

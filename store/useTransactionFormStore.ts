@@ -1,27 +1,26 @@
 import {create} from 'zustand';
-import {persist, createJSONStorage} from 'zustand/middleware';
-import Income from "../models/Income";
-import Transaction from "../models/Transaction";
 import AccountTypes from "../types/AccountTypes";
 import Share from "../models/Share";
 import Friend from "../models/Friend";
 import DebtTypes from "../types/DebtTypes";
+import TransactionTypes from "../types/TransactionTypes";
 
 interface TransactionFormState {
+    selectedTransactionType: TransactionTypes;
+
     //Income and Expense
     name?: string;
     category?: string;
-    subCategory?: string
-    amount?: number;
+    subCategory?: string;
+    amount?: string;
     accountType?: AccountTypes;
     description?: string;
     splitPayment?: boolean;
     shares?: Share[];
     date: Date;
-    time: Date;
 
     //Debt
-    to?: Friend;
+    debtPerson?: Friend;
     debtType?: DebtTypes;
 
     //Transfer
@@ -38,7 +37,7 @@ const useTransactionFormStore = create<TransactionFormState>()(
     (set) => ({
         splitPayment: false,
         date: new Date(),
-        time: new Date(),
+        selectedTransactionType: TransactionTypes.Expense,
 
         setValue: (payload: { field: string, value: any }) =>
             set((state) => ({
@@ -48,6 +47,7 @@ const useTransactionFormStore = create<TransactionFormState>()(
 
         clearForm: () =>
             set(() => ({
+                selectedTransactionType: TransactionTypes.Expense,
                 name: undefined,
                 category: undefined,
                 subCategory: undefined,
@@ -56,12 +56,11 @@ const useTransactionFormStore = create<TransactionFormState>()(
                 description: undefined,
                 splitPayment: false,
                 shares: undefined,
-                to: undefined,
+                debtPerson: undefined,
                 debtType: undefined,
                 fromAccount: undefined,
                 toAccount: undefined,
                 date: new Date(),
-                time: new Date(),
             })),
 
     }),

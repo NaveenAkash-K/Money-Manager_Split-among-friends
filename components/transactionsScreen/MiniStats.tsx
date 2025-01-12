@@ -1,11 +1,15 @@
 import React, {useState} from 'react';
 import {StyleSheet, View, Text, TouchableOpacity, Animated} from 'react-native';
 import {MaterialIcons} from '@expo/vector-icons';
-import Colors from "../../constants/Colors"; // Make sure to install this package
+import Colors from "../../constants/Colors";
+import useTransactionsStore from "../../store/useTransactionsStore";
+import Income from "../../models/Income";
+import Expense from "../../models/Expense"; // Make sure to install this package
 
 const MiniStats = () => {
     const [expanded, setExpanded] = useState(false); // State to track whether the debt details are expanded
     const [heightAnim] = useState(new Animated.Value(0)); // Initial height for animating
+    const {getTotalIncome, getTotalExpense} = useTransactionsStore();
 
     const toggleDebtDetails = () => {
         setExpanded(!expanded);
@@ -22,15 +26,18 @@ const MiniStats = () => {
             <View style={styles.topRow}>
                 <View style={styles.statCard}>
                     <Text style={styles.statTitle}>Income</Text>
-                    <Text style={[styles.statValue, {color: Colors.income.main}]}>₹2,000</Text>
+                    <Text
+                        style={[styles.statValue, {color: Colors.income.main}]}>{`₹ ${getTotalIncome()}`}</Text>
                 </View>
                 <View style={styles.statCard}>
                     <Text style={styles.statTitle}>Expenses</Text>
-                    <Text style={[styles.statValue, {color: Colors.expense.main}]}>₹1,200</Text>
+                    <Text
+                        style={[styles.statValue, {color: Colors.expense.main}]}>{`₹ ${getTotalExpense()}`}</Text>
                 </View>
                 <View style={styles.statCard}>
                     <Text style={styles.statTitle}>Total</Text>
-                    <Text style={styles.statValue}>₹5,000</Text>
+                    <Text
+                        style={[styles.statValue, (getTotalIncome() - getTotalExpense() < 0) ? {color: Colors.expense.main} : {color: Colors.income.main}]}>{`₹ ${Math.abs(getTotalIncome() - getTotalExpense()).toFixed(1)}`}</Text>
                 </View>
                 <View style={styles.divider}/>
                 <View style={styles.statCard}>
@@ -48,7 +55,7 @@ const MiniStats = () => {
                             <Text style={[styles.debtValue, {color: Colors.expense.light}]}>₹1,500</Text>
                         </View>
                         <View style={styles.debtItem}>
-                            <Text style={styles.debtLabel}>Others owe you</Text>
+                            <Text style={styles.debtLabel}>Others owes you</Text>
                             <Text style={[styles.debtValue, {color: Colors.income.light}]}>₹1,500</Text>
                         </View>
                         <View style={styles.debtItem}>
@@ -80,7 +87,7 @@ const styles = StyleSheet.create({
         // borderBottomWidth: 0.5,
         borderColor: Colors.grey["400"],
         shadowOffset: {width: 0, height: 10},
-        elevation:4
+        elevation: 4
         // paddingVertical: 10,
     },
     topRow: {
@@ -117,6 +124,7 @@ const styles = StyleSheet.create({
     debtDetails: {
         overflow: 'hidden',
         paddingHorizontal: 10,
+        marginTop: 10,
     },
     debtTitle: {
         textAlign: 'center',

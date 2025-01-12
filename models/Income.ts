@@ -6,36 +6,34 @@ import TransactionTypes from "../types/TransactionTypes";
 import Share from "./Share";
 
 class Income extends Transaction {
+    static allIncomes: Income[] = [];
+
     accountType: AccountTypes;
     splitPayment: boolean;
     shares: Share[];
 
     constructor(
-        category: string,
         name: string,
         amount: number,
         accountType: AccountTypes,
+        category: string,
+        date: Date,
         description?: string,
         subCategory?: string,
         splitPayment: boolean = false,
         shares: Share[] = [],
     ) {
-        super(category, name, amount, TransactionTypes.Income, description, subCategory);
+        super(name, amount, TransactionTypes.Income, date, category, description, subCategory);
         this.accountType = accountType;
         this.splitPayment = splitPayment;
         this.shares = shares;
 
+        Income.allIncomes.push(this);
     }
 
-    summary(): string {
-        return `
-      Transaction: ${this.name} (Income)
-      Amount: ₹${this.amount}
-      Category: ${this.category}${this.subCategory ? ` > ${this.subCategory}` : ''}
-      Account Type: ${this.accountType}
-      Description: ${this.description || 'N/A'}
-      Created At: ${this.createdAt}
-    `;
+    // Static method to calculate the total income
+    static getTotalIncome(): number {
+        return Income.allIncomes.reduce((total, income) => total + income.amount, 0);
     }
 }
 

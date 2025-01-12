@@ -14,27 +14,14 @@ import {ReactNativeModal} from "react-native-modal";
 import TransactionTypes from "../../types/TransactionTypes";
 import Colors from "../../constants/Colors";
 import TransactionTypeSelectorChips from "../transactionModal/TransactionTypeSelectorChips";
-import IncomeForm from "../transactionModal/IncomeForm";
+import TransactionForm from "../transactionModal/TransactionForm";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import useTransactionFormStore from "../../store/useTransactionFormStore";
+import Expense from "../../models/Expense";
 
 const TransactionModal = (props: { isVisible: boolean; onClose: () => void }) => {
-    const [selectedTransactionType, setSelectedTransactionType] = useState<TransactionTypes>(
-        TransactionTypes.Expense
-    );
-    const [amount, setAmount] = useState("");
-    const [date, setDate] = useState("");
-    const [description, setDescription] = useState("");
 
-    const handleAddTransaction = () => {
-        // Add transaction logic here
-        console.log({
-            type: selectedTransactionType,
-            amount,
-            date,
-            description,
-        });
-        props.onClose();
-    };
+    const {selectedTransactionType, clearForm} = useTransactionFormStore();
 
     return (
         <Modal
@@ -50,21 +37,20 @@ const TransactionModal = (props: { isVisible: boolean; onClose: () => void }) =>
                 marginRight: 5
             }}>
                 <Pressable android_ripple={{color: Colors.grey["200"]}} style={{borderRadius: 8}}
-                           onPress={props.onClose}>
+                           onPress={() => {
+                               props.onClose()
+                               clearForm()
+                           }}>
                     <AntDesign name="arrowleft" size={24} color="black" style={{padding: 10, borderRadius: 8}}/>
                 </Pressable>
-                <Text style={{fontSize: 18, fontWeight: "600"}}>Add Income</Text>
+                <Text style={{fontSize: 18, fontWeight: "600"}}>{selectedTransactionType}</Text>
             </View>
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : undefined}
                 style={styles.container}
             >
-                {/*<View style={styles.handle}/>*/}
-                <TransactionTypeSelectorChips
-                    setSelectedTransactionType={setSelectedTransactionType}
-                    selectedTransactionType={selectedTransactionType}
-                />
-                <IncomeForm/>
+                <TransactionTypeSelectorChips/>
+                <TransactionForm onClose={props.onClose}/>
             </KeyboardAvoidingView>
         </Modal>
     );
@@ -82,14 +68,6 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 15,
         paddingHorizontal: 20,
         paddingVertical: 0,
-    },
-    handle: {
-        width: 40,
-        height: 5,
-        backgroundColor: "#ccc",
-        borderRadius: 2.5,
-        alignSelf: "center",
-        marginVertical: 10,
     },
 });
 

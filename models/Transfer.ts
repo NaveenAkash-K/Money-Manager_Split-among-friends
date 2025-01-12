@@ -5,33 +5,23 @@ import AccountTypes from "../types/AccountTypes";
 import TransactionTypes from "../types/TransactionTypes";
 
 class Transfer extends Transaction {
+    static allTransfers:Transfer[] = [];
     fromAccount: AccountTypes;
     toAccount: AccountTypes;
 
     constructor(
-        category: string,
         name: string,
         amount: number,
+        date: Date,
         fromAccount: AccountTypes,
         toAccount: AccountTypes,
         description?: string,
-        subCategory?: string
     ) {
-        super(category, name, amount, TransactionTypes.Transfer, description, subCategory);
+        super(name, amount, TransactionTypes.Transfer, date, description);
         this.fromAccount = fromAccount;
         this.toAccount = toAccount;
-    }
-
-    summary(): string {
-        return `
-      Transaction: ${this.name} (Transfer)
-      Amount: ₹${this.amount}
-      Category: ${this.category}${this.subCategory ? ` > ${this.subCategory}` : ''}
-      From Account: ${this.fromAccount}
-      To Account: ${this.toAccount}
-      Description: ${this.description || 'N/A'}
-      Created At: ${this.createdAt}
-    `;
+        this.description = description;
+        Transfer.allTransfers.push(this);
     }
 }
 

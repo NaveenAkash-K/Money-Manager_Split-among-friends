@@ -1,5 +1,5 @@
 // import './gesture-handler';
-import React from 'react';
+import React, {useEffect, useLayoutEffect} from 'react';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {StyleSheet, View} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
@@ -9,6 +9,8 @@ import {NavigationContainer} from '@react-navigation/native';
 import DrawerNavigator from "./navigators/DrawerNavigator";
 // import TransactionsScreen from "./screens/TransactionsScreen";
 // import DrawerNavigator from "./navigators/DrawerNavigator";
+import useTransactionsStore from "./store/useTransactionsStore";
+import transactionsStoreSerializer from "./utils/transactionsStoreSerializer";
 
 // enableScreens()
 
