@@ -5,7 +5,8 @@ import Colors from "../../constants/Colors";
 import useTransactionsStore from "../../store/useTransactionsStore";
 import Income from "../../models/Income";
 import Expense from "../../models/Expense";
-import useNonPersistStore from "../../store/useNonPersistStore"; // Make sure to install this package
+import useNonPersistStore from "../../store/useNonPersistStore";
+import StatsRow from "../common/StatsRow"; // Make sure to install this package
 
 const MiniStats = () => {
     const [expanded, setExpanded] = useState(false); // State to track whether the debt details are expanded
@@ -15,7 +16,8 @@ const MiniStats = () => {
         getTotalExpense,
         getTotalBalanceAfterSettlement,
         getTotalPayableDebt,
-        getTotalReceivableDebt
+        getTotalReceivableDebt,
+        getTotalBalance
     } = useTransactionsStore();
 
     const {transactionDate} = useNonPersistStore()
@@ -32,28 +34,12 @@ const MiniStats = () => {
 
     return (
         <View style={styles.miniStats}>
-            <View style={styles.topRow}>
-                <View style={styles.statCard}>
-                    <Text style={styles.statTitle}>Income</Text>
-                    <Text
-                        style={[styles.statValue, {color: Colors.income.main}]}>{`₹ ${getTotalIncome(transactionDate)}`}</Text>
-                </View>
-                <View style={styles.statCard}>
-                    <Text style={styles.statTitle}>Expenses</Text>
-                    <Text
-                        style={[styles.statValue, {color: Colors.expense.main}]}>{`₹ ${getTotalExpense(transactionDate)}`}</Text>
-                </View>
-                <View style={styles.statCard}>
-                    <Text style={styles.statTitle}>Cashflow</Text>
-                    <Text
-                        style={[styles.statValue, (getTotalIncome(transactionDate) - getTotalExpense(transactionDate) < 0) ? {color: Colors.expense.main} : {color: Colors.income.main}]}>{`₹ ${Math.abs(getTotalIncome(transactionDate) - getTotalExpense(transactionDate)).toFixed(1)}`}</Text>
-                </View>
-                <View style={styles.divider}/>
-                <View style={styles.statCard}>
-                    <Text style={styles.statTitle}>Total Balance</Text>
-                    <Text style={styles.statValue}>{"₹ " + (getTotalIncome() - getTotalExpense())}</Text>
-                </View>
-            </View>
+            <StatsRow
+                totalIncome={getTotalIncome(transactionDate)}
+                totalExpense={getTotalExpense(transactionDate)}
+                cashflow={getTotalIncome(transactionDate) - getTotalExpense(transactionDate)}
+                totalBalance={getTotalBalance()}
+            />
 
             <View style={styles.detailsContainer}>
                 <Animated.View style={[styles.debtDetails, {height: heightAnim}]}>

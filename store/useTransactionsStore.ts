@@ -24,7 +24,7 @@ interface TransactionState {
     getTotalPayableDebt: (transactionDate?: Date, accountType?: AccountTypes) => number;
     getTotalReceivableDebt: (transactionDate?: Date, accountType?: AccountTypes) => number;
     getTotalBalanceAfterSettlement: (transactionDate?: Date) => number;
-    getTotalBalance: (accountType: AccountTypes) => number;
+    getTotalBalance: (accountType?: AccountTypes) => number;
 }
 
 const useTransactionsStore = create<TransactionState>()(

@@ -5,6 +5,7 @@ import {G, Text as SVGText} from "react-native-svg";
 import Colors from "../constants/Colors";
 import useTransactionsStore from "../store/useTransactionsStore";
 import AccountTypes from "../types/AccountTypes";
+import StatsRow from "../components/common/StatsRow";
 
 const primaryColor = "#3b5fff";
 const darkerShade = "#8faeff";
@@ -16,7 +17,7 @@ const AccountsScreen = () => {
     const totalValue = 98 + 30 + 20;
     const data = [
         {value: 98, svg: {fill: primaryColor}, key: "Cash"},
-        {value: 30, svg: {fill: lighterShade}, key: "Bank Account"},
+        {value: 30, svg: {fill: lighterShade}, key: "Account"},
         {value: 20, svg: {fill: darkerShade}, key: "Card"},
     ];
 
@@ -93,93 +94,16 @@ const AccountsScreen = () => {
                         fontSize: 16,
                         fontWeight: '600',
                         marginBottom: 10,
-                        paddingVertical:5,
-                        paddingHorizontal:15,
+                        paddingVertical: 5,
+                        paddingHorizontal: 15,
                         backgroundColor: Colors.grey["200"]
                     }}>Card</Text>
-                    <View style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-around',
-                        alignItems: 'center',
-                    }}>
-                        <View style={{
-                            // paddingVertical: 10,
-                            paddingTop: 10,
-                            paddingHorizontal: 15,
-                            alignItems: 'center',
-                        }}>
-                            <Text style={{
-                                fontSize: 14,
-                                color: '#7f8c8d',
-                                marginBottom: 4,
-                            }}>Income</Text>
-                            <Text
-                                style={[{
-                                    fontSize: 14,
-                                    fontWeight: '500',
-                                    color: '#2c3e50',
-                                }, {color: Colors.income.main}]}>{`₹ ${getTotalIncome(undefined, AccountTypes.Card)}`}</Text>
-                        </View>
-                        <View style={{
-                            // paddingVertical: 10,
-                            paddingTop: 10,
-                            paddingHorizontal: 15,
-                            alignItems: 'center',
-                        }}>
-                            <Text style={{
-                                fontSize: 14,
-                                color: '#7f8c8d',
-                                marginBottom: 4,
-                            }}>Expenses</Text>
-                            <Text
-                                style={[{
-                                    fontSize: 14,
-                                    fontWeight: '500',
-                                    color: '#2c3e50',
-                                }, {color: Colors.expense.main}]}>{`₹ ${getTotalExpense(undefined, AccountTypes.Card)}`}</Text>
-                        </View>
-                        <View style={{
-                            // paddingVertical: 10,
-                            paddingTop: 10,
-                            paddingHorizontal: 15,
-                            alignItems: 'center',
-                        }}>
-                            <Text style={{
-                                fontSize: 14,
-                                color: '#7f8c8d',
-                                marginBottom: 4,
-                            }}>Cashflow</Text>
-                            <Text
-                                style={[{
-                                    fontSize: 14,
-                                    fontWeight: '500',
-                                    color: '#2c3e50',
-                                }, (getTotalIncome(undefined, AccountTypes.Card) - getTotalExpense(undefined, AccountTypes.Card) < 0) ? {color: Colors.expense.main} : {color: Colors.income.main}]}>{`₹ ${Math.abs(getTotalIncome(undefined, AccountTypes.Card) - getTotalExpense(undefined, AccountTypes.Card)).toFixed(1)}`}</Text>
-                        </View>
-                        <View style={{
-                            height: '90%',
-                            width: 1,
-                            backgroundColor: Colors.grey["300"],
-                            borderRadius: 100,
-                        }}/>
-                        <View style={{
-                            // paddingVertical: 10,
-                            paddingTop: 10,
-                            paddingHorizontal: 15,
-                            alignItems: 'center',
-                        }}>
-                            <Text style={{
-                                fontSize: 14,
-                                color: '#7f8c8d',
-                                marginBottom: 4,
-                            }}>Total Balance</Text>
-                            <Text style={{
-                                fontSize: 14,
-                                fontWeight: '500',
-                                color: '#2c3e50',
-                            }}>{"₹ " + (getTotalBalance(AccountTypes.Card))}</Text>
-                        </View>
-                    </View>
+                    <StatsRow
+                        totalIncome={getTotalIncome(undefined, AccountTypes.Card)}
+                        totalExpense={getTotalExpense(undefined, AccountTypes.Card)}
+                        cashflow={parseFloat((getTotalIncome(undefined, AccountTypes.Card) - getTotalExpense(undefined, AccountTypes.Card)).toFixed(1))}
+                        totalBalance={getTotalBalance(AccountTypes.Card)}
+                    />
                 </View>
 
                 {/* Cash Account */}
@@ -188,93 +112,16 @@ const AccountsScreen = () => {
                         fontSize: 16,
                         fontWeight: '600',
                         marginBottom: 10,
-                        paddingVertical:5,
-                        paddingHorizontal:15,
+                        paddingVertical: 5,
+                        paddingHorizontal: 15,
                         backgroundColor: Colors.grey["200"]
                     }}>Cash</Text>
-                    <View style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-around',
-                        alignItems: 'center',
-                    }}>
-                        <View style={{
-                            // paddingVertical: 10,
-                            paddingTop: 10,
-                            paddingHorizontal: 15,
-                            alignItems: 'center',
-                        }}>
-                            <Text style={{
-                                fontSize: 14,
-                                color: '#7f8c8d',
-                                marginBottom: 4,
-                            }}>Income</Text>
-                            <Text
-                                style={[{
-                                    fontSize: 14,
-                                    fontWeight: '500',
-                                    color: '#2c3e50',
-                                }, {color: Colors.income.main}]}>{`₹ ${getTotalIncome(undefined, AccountTypes.Cash)}`}</Text>
-                        </View>
-                        <View style={{
-                            // paddingVertical: 10,
-                            paddingTop: 10,
-                            paddingHorizontal: 15,
-                            alignItems: 'center',
-                        }}>
-                            <Text style={{
-                                fontSize: 14,
-                                color: '#7f8c8d',
-                                marginBottom: 4,
-                            }}>Expenses</Text>
-                            <Text
-                                style={[{
-                                    fontSize: 14,
-                                    fontWeight: '500',
-                                    color: '#2c3e50',
-                                }, {color: Colors.expense.main}]}>{`₹ ${getTotalExpense(undefined, AccountTypes.Cash)}`}</Text>
-                        </View>
-                        <View style={{
-                            // paddingVertical: 10,
-                            paddingTop: 10,
-                            paddingHorizontal: 15,
-                            alignItems: 'center',
-                        }}>
-                            <Text style={{
-                                fontSize: 14,
-                                color: '#7f8c8d',
-                                marginBottom: 4,
-                            }}>Cashflow</Text>
-                            <Text
-                                style={[{
-                                    fontSize: 14,
-                                    fontWeight: '500',
-                                    color: '#2c3e50',
-                                }, (getTotalIncome(undefined, AccountTypes.Cash) - getTotalExpense(undefined, AccountTypes.Cash) < 0) ? {color: Colors.expense.main} : {color: Colors.income.main}]}>{`₹ ${Math.abs(getTotalIncome(undefined, AccountTypes.Cash) - getTotalExpense(undefined, AccountTypes.Cash)).toFixed(1)}`}</Text>
-                        </View>
-                        <View style={{
-                            height: '90%',
-                            width: 1,
-                            backgroundColor: Colors.grey["300"],
-                            borderRadius: 100,
-                        }}/>
-                        <View style={{
-                            // paddingVertical: 10,
-                            paddingTop: 10,
-                            paddingHorizontal: 15,
-                            alignItems: 'center',
-                        }}>
-                            <Text style={{
-                                fontSize: 14,
-                                color: '#7f8c8d',
-                                marginBottom: 4,
-                            }}>Total Balance</Text>
-                            <Text style={{
-                                fontSize: 14,
-                                fontWeight: '500',
-                                color: '#2c3e50',
-                            }}>{"₹ " + (getTotalBalance(AccountTypes.Cash))}</Text>
-                        </View>
-                    </View>
+                    <StatsRow
+                        totalIncome={getTotalIncome(undefined, AccountTypes.Cash)}
+                        totalExpense={getTotalExpense(undefined, AccountTypes.Cash)}
+                        cashflow={parseFloat((getTotalIncome(undefined, AccountTypes.Cash) - getTotalExpense(undefined, AccountTypes.Cash)).toFixed(1))}
+                        totalBalance={getTotalBalance(AccountTypes.Cash)}
+                    />
                 </View>
 
                 {/* Account Account */}
@@ -283,93 +130,16 @@ const AccountsScreen = () => {
                         fontSize: 16,
                         fontWeight: '600',
                         marginBottom: 10,
-                        paddingVertical:5,
-                        paddingHorizontal:15,
+                        paddingVertical: 5,
+                        paddingHorizontal: 15,
                         backgroundColor: Colors.grey["200"]
                     }}>Accounts</Text>
-                    <View style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-around',
-                        alignItems: 'center',
-                    }}>
-                        <View style={{
-                            // paddingVertical: 10,
-                            paddingTop: 10,
-                            paddingHorizontal: 15,
-                            alignItems: 'center',
-                        }}>
-                            <Text style={{
-                                fontSize: 14,
-                                color: '#7f8c8d',
-                                marginBottom: 4,
-                            }}>Income</Text>
-                            <Text
-                                style={[{
-                                    fontSize: 14,
-                                    fontWeight: '500',
-                                    color: '#2c3e50',
-                                }, {color: Colors.income.main}]}>{`₹ ${getTotalIncome(undefined, AccountTypes.Account)}`}</Text>
-                        </View>
-                        <View style={{
-                            // paddingVertical: 10,
-                            paddingTop: 10,
-                            paddingHorizontal: 15,
-                            alignItems: 'center',
-                        }}>
-                            <Text style={{
-                                fontSize: 14,
-                                color: '#7f8c8d',
-                                marginBottom: 4,
-                            }}>Expenses</Text>
-                            <Text
-                                style={[{
-                                    fontSize: 14,
-                                    fontWeight: '500',
-                                    color: '#2c3e50',
-                                }, {color: Colors.expense.main}]}>{`₹ ${getTotalExpense(undefined, AccountTypes.Account)}`}</Text>
-                        </View>
-                        <View style={{
-                            // paddingVertical: 10,
-                            paddingTop: 10,
-                            paddingHorizontal: 15,
-                            alignItems: 'center',
-                        }}>
-                            <Text style={{
-                                fontSize: 14,
-                                color: '#7f8c8d',
-                                marginBottom: 4,
-                            }}>Cashflow</Text>
-                            <Text
-                                style={[{
-                                    fontSize: 14,
-                                    fontWeight: '500',
-                                    color: '#2c3e50',
-                                }, (getTotalIncome(undefined, AccountTypes.Account) - getTotalExpense(undefined, AccountTypes.Account) < 0) ? {color: Colors.expense.main} : {color: Colors.income.main}]}>{`₹ ${Math.abs(getTotalIncome(undefined, AccountTypes.Account) - getTotalExpense(undefined, AccountTypes.Account)).toFixed(1)}`}</Text>
-                        </View>
-                        <View style={{
-                            height: '90%',
-                            width: 1,
-                            backgroundColor: Colors.grey["300"],
-                            borderRadius: 100,
-                        }}/>
-                        <View style={{
-                            // paddingVertical: 10,
-                            paddingTop: 10,
-                            paddingHorizontal: 15,
-                            alignItems: 'center',
-                        }}>
-                            <Text style={{
-                                fontSize: 14,
-                                color: '#7f8c8d',
-                                marginBottom: 4,
-                            }}>Total Balance</Text>
-                            <Text style={{
-                                fontSize: 14,
-                                fontWeight: '500',
-                                color: '#2c3e50',
-                            }}>{"₹ " + (getTotalBalance(AccountTypes.Account))}</Text>
-                        </View>
-                    </View>
+                    <StatsRow
+                        totalIncome={getTotalIncome(undefined, AccountTypes.Account)}
+                        totalExpense={getTotalExpense(undefined, AccountTypes.Account)}
+                        cashflow={parseFloat((getTotalIncome(undefined, AccountTypes.Account) - getTotalExpense(undefined, AccountTypes.Account)).toFixed(1))}
+                        totalBalance={getTotalBalance(AccountTypes.Account)}
+                    />
                 </View>
             </View>
         </View>

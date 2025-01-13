@@ -11,7 +11,7 @@ const DateChanger = () => {
     const {transactionDate, setTransactionDate} = useNonPersistStore();
 
     // Handle Year and Month Changes
-    const changeMonth = (increment) => {
+    const changeMonth = (increment: number) => {
         const newDate = new Date(transactionDate);
         newDate.setMonth(transactionDate.getMonth() + increment); // Change the month
         setTransactionDate(newDate); // Update the date
