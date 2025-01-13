@@ -4,10 +4,11 @@ import StatsScreen from '../screens/StatsScreen'; // Replace with your actual pa
 import AccountsScreen from '../screens/AccountsScreen';   // Replace with your actual path
 import TransactionsScreen from '../screens/TransactionsScreen'; // Replace with your actual path
 import DebtsScreen from '../screens/DebtsScreen';  // Replace with your actual path
-import {Pressable, StyleSheet} from "react-native"
+import {Pressable, StyleSheet, Text, View} from "react-native"
 import {Entypo, FontAwesome6, Ionicons, MaterialIcons} from "@expo/vector-icons";
 import {useNavigation} from "@react-navigation/native";
 import {DrawerActions} from "@react-navigation/native";
+import DateChanger from "../components/transactionsScreen/DateChanger";
 
 const Tab = createBottomTabNavigator();
 
@@ -30,13 +31,24 @@ function TabNavigator() {
             sceneStyle: {backgroundColor: "#fff"},
             tabBarActiveTintColor: "#3b5fff",
         }}>
-            <Tab.Screen name="Transactions"
-                        component={TransactionsScreen}
-                        options={{
-                            headerShadowVisible: false,
-                            tabBarIcon: ((props) =>
-                                <FontAwesome6 name="money-bill-transfer" size={20} color={props.color}/>)
-                        }}/>
+            <Tab.Screen
+                name="Transactions"
+                component={TransactionsScreen}
+                options={{
+                    headerShadowVisible: false,
+                    headerRightContainerStyle: {
+                        marginLeft: 10, // Add spacing to align properly
+                    },
+                    headerRight: () => (
+                        <View style={{marginRight: 15}}>
+                            <DateChanger/>
+                        </View>
+                    ),
+                    tabBarIcon: (props) => (
+                        <FontAwesome6 name="money-bill-transfer" size={20} color={props.color}/>
+                    ),
+                }}
+            />
             <Tab.Screen name="Stats" component={StatsScreen}
                         options={{
                             tabBarIcon: (props =>

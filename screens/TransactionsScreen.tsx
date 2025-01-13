@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {SectionList, StyleSheet, Text, View} from "react-native";
 import Colors from "../constants/Colors";
 import AccountTypes from "../types/AccountTypes";
@@ -9,17 +9,26 @@ import TransactionModal from "../components/transactionsScreen/TransactionModal"
 import Expense from "../models/Expense";
 import useTransactionsStore from "../store/useTransactionsStore";
 import useTransactionFormStore from "../store/useTransactionFormStore";
+import DateChanger from "../components/transactionsScreen/DateChanger";
+import useNonPersistStore from "../store/useNonPersistStore";
+import filterTransactions from "../utils/filterTransactions";
 
 const TransactionsScreen = () => {
     // Static plain object array for transactions
     const [isTransactionModalVisible, setIsTransactionModalVisible] = useState(false)
-
+    const {transactionDate} = useNonPersistStore()
     const {transactions} = useTransactionsStore();
     const {clearForm} = useTransactionFormStore();
+    const [filteredTransactions, setFilteredTransactions] = useState(transactions);
+
+    useEffect(() => {
+        const filtered = filterTransactions(transactions, transactionDate);
+        setFilteredTransactions(filtered);
+    }, [transactionDate, transactions]);
 
     // Helper function to group transactions by date
     const groupTransactionsByDate = () => {
-        const grouped = transactions.reduce((acc, transaction) => {
+        const grouped = filteredTransactions.reduce((acc, transaction) => {
             const date = new Date(transaction.date).toDateString(); // Group by date (date without time)
             if (!acc[date]) {
                 acc[date] = [];
@@ -54,19 +63,33 @@ const TransactionsScreen = () => {
                 setIsTransactionModalVisible(false)
             }}/>}
 
+
             <MiniStats/>
-            <SectionList
-                sections={groupedTransactions}
-                renderItem={renderTransaction}
-                renderSectionHeader={({section}) => <View style={styles.header}>
-                    <Text style={styles.headerText}>{section.title}</Text>
-                </View>}
-                renderSectionFooter={() => <View style={styles.divider}/>}
-                keyExtractor={(item) => item.id}
-                style={styles.transactionsList}
-                contentContainerStyle={styles.listContent}
-                showsVerticalScrollIndicator={false}
-            />
+
+            {groupedTransactions.length <= 0 ?
+                <View style={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                    flex: 1
+                }}>
+                    <Text style={{
+                        fontWeight: "bold",
+                        fontSize: 16, textAlign: "center"
+                    }}>No Transactions</Text>
+                </View> :
+                <SectionList
+                    sections={groupedTransactions}
+                    renderItem={renderTransaction}
+                    renderSectionHeader={({section}) => <View style={styles.header}>
+                        <Text style={styles.headerText}>{section.title}</Text>
+                    </View>}
+                    renderSectionFooter={() => <View style={styles.divider}/>}
+                    keyExtractor={(item) => item.id}
+                    style={styles.transactionsList}
+                    contentContainerStyle={styles.listContent}
+                    showsVerticalScrollIndicator={false}
+                />}
+
             <FAB
                 icon="plus"
                 color="white"

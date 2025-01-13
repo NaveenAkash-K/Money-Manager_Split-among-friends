@@ -162,7 +162,7 @@ const TransactionForm = (props: { onClose: () => void; }) => {
                 style={styles.input}
                 placeholder="Enter amount"
                 placeholderTextColor={Colors.grey["500"]}
-                keyboardType="numeric"
+                keyboardType="number-pad"
                 value={amount?.toString()}
                 onChangeText={(text) => {
                     setValue({field: "amount", value: text})

@@ -5,7 +5,7 @@ import Colors from "../../constants/Colors";
 import useFriendsStore from "../../store/useFriendsStore";
 import Friend from "../../models/Friend";
 
-const AddFriendsModal = (props) => {
+const AddFriendsModal = (props: any) => {
     const [name, setName] = useState<string | undefined>()
     const [phoneNo, setPhoneNo] = useState<string | undefined>()
     const [email, setEmail] = useState<string | undefined>()
