@@ -40,7 +40,7 @@ const MonthPicker = ({selectedDate, setSelectedDate}) => {
         if (showYearList && yearListRef.current && itemHeight > 0) {
             const currentYearIndex = years.indexOf(moment(selectedDate).year());
             if (currentYearIndex !== -1) {
-                const yOffset = (currentYearIndex)  * (itemHeight + 6);  // Calculate based on dynamic height
+                const yOffset = (currentYearIndex) * (itemHeight + 6);  // Calculate based on dynamic height
                 yearListRef.current.scrollTo({y: yOffset, animated: false});
             }
         }
@@ -130,8 +130,11 @@ const MonthPicker = ({selectedDate, setSelectedDate}) => {
                         ) : (
                             <View style={styles.monthContainer}>
                                 {months.map((month, index) => {
-                                    const isCurrentMonth = moment().month() === index;
-                                    const isSelectedMonth = selectedDate.getMonth() === index;
+                                    const isCurrentMonth =
+                                        moment().month() === index && moment().year() === moment(selectedDate).year(); // Check both month and year
+                                    const isSelectedMonth =
+                                        selectedDate.getMonth() === index
+
                                     return (
                                         <Pressable
                                             android_ripple={{
@@ -141,14 +144,18 @@ const MonthPicker = ({selectedDate, setSelectedDate}) => {
                                             key={index}
                                             style={[
                                                 styles.monthItem,
-                                                isCurrentMonth && styles.currentMonth,
-                                                isSelectedMonth && styles.selectedMonth,
+                                                isCurrentMonth && styles.currentMonth, // Highlight current month only for the current year
+                                                isSelectedMonth && styles.selectedMonth, // Highlight selected month only for the selected year
                                                 {borderRadius: 1000},
                                             ]}
                                             onPress={() => handleMonthSelect(index)}
                                         >
                                             <Text
-                                                style={[styles.monthText, isSelectedMonth ? {color: "white"} : {}]}>
+                                                style={[
+                                                    styles.monthText,
+                                                    isSelectedMonth ? {color: "white"} : {}, // Highlight selected month's text
+                                                ]}
+                                            >
                                                 {month}
                                             </Text>
                                         </Pressable>

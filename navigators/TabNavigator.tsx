@@ -61,6 +61,7 @@ function TabNavigator() {
                         }}/>
             <Tab.Screen name="Debts" component={DebtsScreen}
                         options={{
+                            headerShadowVisible: false,
                             tabBarIcon: (props =>
                                 <MaterialIcons name="transfer-within-a-station" size={24} color={props.color}/>)
                         }}/>

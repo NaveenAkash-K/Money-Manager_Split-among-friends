@@ -1,92 +1,29 @@
 import React, {useState} from "react";
-import {View, Text, StyleSheet} from "react-native";
+import {View, Text, StyleSheet, Dimensions} from "react-native";
 import {PieChart} from "react-native-svg-charts";
 import {G, Text as SVGText} from "react-native-svg";
+import {PanGestureHandler} from "react-native-gesture-handler";
+import Animated, {useSharedValue, useAnimatedStyle, withSpring} from "react-native-reanimated";
 import Colors from "../constants/Colors";
 import useTransactionsStore from "../store/useTransactionsStore";
 import AccountTypes from "../types/AccountTypes";
 import StatsRow from "../components/common/StatsRow";
+import AccountsChart from "../components/accountsScreen/AccountsChart";
+
+const {width: SCREEN_WIDTH} = Dimensions.get("window");
 
 const primaryColor = "#3b5fff";
 const darkerShade = "#8faeff";
 const lighterShade = "#001f5b";
 
 const AccountsScreen = () => {
-    const [selectedSlice, setSelectedSlice] = useState(null);
-    const {getTotalIncome, getTotalExpense, getTotalBalance} = useTransactionsStore()
-    const totalValue = 98 + 30 + 20;
-    const data = [
-        {value: 98, svg: {fill: primaryColor}, key: "Cash"},
-        {value: 30, svg: {fill: lighterShade}, key: "Account"},
-        {value: 20, svg: {fill: darkerShade}, key: "Card"},
-    ];
-
-    // Pie Data with percentage and touch events
-    const pieData = data.map((slice, index) => ({
-        ...slice,
-        // arc: {outerRadius: "100%", innerRadius: "60%"},
-        key: `pie-${index}`,
-        labelCentroid: slice.value, // For positioning labels correctly
-        label: `${((slice.value / totalValue) * 100).toFixed(1)}%`, // Percentage
-        onPress: () => setSelectedSlice(slice), // Handle slice tap
-    }));
-
-    // Custom Labels Component
-    const Labels = ({slices}) => {
-        return slices.map((slice, index) => {
-            const {pieCentroid, data} = slice;
-            return (
-                <SVGText
-                    key={index}
-                    x={pieCentroid[0]}
-                    y={pieCentroid[1]}
-                    fill="white"
-                    textAnchor="middle"
-                    alignmentBaseline="middle"
-                    fontSize={14}
-                    style={{fontWeight: "bold"}}
-                >
-                    {data.label}
-                </SVGText>
-            );
-        });
-    };
+    const [chartType, setChartType] = useState("Expense"); // Track current chart type
+    const {getTotalIncome, getTotalExpense, getTotalBalance} = useTransactionsStore();
+    const translateX = useSharedValue(0);
 
     return (
         <View>
-            <View style={{
-                flexDirection: "row",
-                gap: 25,
-                marginTop: 20,
-                marginBottom: 20,
-                alignItems: "center",
-                justifyContent: "center"
-            }}>
-                <PieChart
-                    style={styles.chart}
-                    data={pieData}
-                    animate
-                >
-                    {/* Render custom labels */}
-                    <Labels/>
-                </PieChart>
-                <View>
-                    <Text style={styles.title}>Account Distribution</Text>
-                    <View style={styles.legendContainer}>
-                        {data.map((item, index) => (
-                            <View key={index} style={styles.legendItem}>
-                                <View
-                                    style={[
-                                        styles.legendColor,
-                                        {backgroundColor: item.svg.fill},
-                                    ]}
-                                />
-                                <Text style={styles.legendText}>{item.key}</Text>
-                            </View>
-                        ))}
-                    </View>
-                </View>
-            </View>
+            <AccountsChart/>
             <View style={{borderTopWidth: 1, borderTopColor: "#B0BEC5"}}>
                 {/* Card Account */}
                 <View style={{marginBottom: 20}}>
@@ -147,6 +84,13 @@ const AccountsScreen = () => {
 };
 
 const styles = StyleSheet.create({
+    chartContainer: {
+        alignItems: "center",
+        justifyContent: "center",
+        flexDirection: "row",
+        height: 250,
+        gap: 20,
+    },
     chart: {
         height: 200,
         width: 200,
@@ -159,7 +103,7 @@ const styles = StyleSheet.create({
     },
     legendContainer: {
         marginTop: 20,
-        width: "60%",
+        width: "100%",
     },
     legendItem: {
         flexDirection: "row",
@@ -174,17 +118,6 @@ const styles = StyleSheet.create({
     },
     legendText: {
         fontSize: 14,
-        color: "#333",
-    },
-    detailContainer: {
-        position: "absolute",
-        top: "50%",
-        alignItems: "center",
-        width: "100%",
-    },
-    detailText: {
-        fontSize: 16,
-        fontWeight: "bold",
         color: "#333",
     },
 });
