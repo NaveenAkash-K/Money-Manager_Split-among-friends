@@ -1,0 +1,37 @@
+Pending Tasks
+[ ] - Make Text Input as Separate reusable component
+[ ] - Create a modal to choose friends with search
+[ ] - Add a Month + Month changer, All date range filter in Accounts Screen
+[ ] - Look for a better Error indicating approch in Transactions Form
+[ ] - Remove the percentage label in chart If the percentage is below 10
+[ ] - Show the amount of particular bar of chart is pressed
+[ ] - Show seperate sub categories for each category
+[ ] - Create a modal to show temporary transactions
+[ ] - Enable option to select transactions on long press
+[ ] - Enable editing transactions
+[ ] - Enable Deleting transactions
+[ ] - Make Cateogries and sub categories dynamic
+[ ] - Add switch in settings Screen to enable sub categories
+[ ] - Add a seperate page to manage categories and subcategories
+[ ] - Enable scroll in accounts screen
+[ ] - Modify Color scheme file and use it all over the app
+[ ] - Create a text theme + font to use it all over the app
+[ ] - Show the balance in accounts in transactions form when transfer is selected
+[ ] - Show the after balance computation before proceeding to transfer money between accounts
+
+
+Completed Tasks
+[x] - Design Mini Stats
+[x] - Enable animation in Mini Stats to reveal debts stats
+[x] - Design Transaction Item
+[x] - Implement a month changer in Transactions Screen
+[x] - Implement a custom month picker Component
+[x] - Add Accounts Chart in Accounts Screen
+[x] - Design Accounts stats in Accounts Screen
+[x] - Add swipe animation to Accounts chart to change the chart
+[x] - Write functions in Transactions Store to calculate income, debt, expense and balance including transfers
+[x] - Add Debts chart in debts screen
+[x] - Design Friends list table in debts screen
+[x] - Create a page to manage friends
+[x] - Create a modal to add friends
+[x] - Make debts table list in debts screen sortable
