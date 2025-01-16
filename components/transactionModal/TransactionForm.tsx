@@ -17,6 +17,7 @@ import Transfer from "../../models/Transfer";
 import Debt from "../../models/Debt";
 import Dropdown from "../common/Dropdown";
 import useFriendsStore from "../../store/useFriendsStore";
+import {Portal, Snackbar} from "react-native-paper";
 
 const data = [
     {key: '1', value: 'Mobiles',},
@@ -49,10 +50,21 @@ const TransactionForm = (props: { onClose: () => void; }) => {
     } = useTransactionFormStore();
 
     const {addTransaction} = useTransactionsStore();
+    const [isSnackBarVisible, setIsSnackBarVisible] = useState(false)
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
-
     const [debtTypeLabel, setDebtTypeLabel] = useState<string | undefined>();
+
+    const [isNameError, setIsNameError] = useState(false)
+    const [isAmountError, setIsAmountError] = useState(false)
+    const [isCategoryError, setIsCategoryError] = useState(false)
+    const [isAccountTypeError, setIsAccountTypeError] = useState(false)
+
+    const [isFromAccountError, setIsFromAccountError] = useState(false)
+    const [isToAccountError, setIsToAccountError] = useState(false)
+
+    const [isFriendError, setIsFriendError] = useState(false)
+    const [isDebtTypeError, setIsDebtTypeError] = useState(false)
 
     useEffect(() => {
         if (debtType === DebtTypes.Owe) {
@@ -65,33 +77,129 @@ const TransactionForm = (props: { onClose: () => void; }) => {
     const {friends} = useFriendsStore();
 
     const handleAddTransaction = () => {
-        // TODO: Validation
+        let isValid = true;
+
+        setIsSnackBarVisible(true);
+
+        // Reset all errors initially
+        setIsNameError(false);
+        setIsAmountError(false);
+        setIsCategoryError(false);
+        setIsAccountTypeError(false);
+        setIsFromAccountError(false);
+        setIsToAccountError(false);
+        setIsFriendError(false);
+        setIsDebtTypeError(false);
+
+        if (!name) {
+            setIsNameError(true);
+            isValid = false;
+        }
+
+        if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
+            setIsAmountError(true);
+            isValid = false;
+        }
 
         if (selectedTransactionType === TransactionTypes.Expense) {
-            if (!name || !amount || !category || !accountType || !date) {
-                return;
+            if (!category) {
+                setIsCategoryError(true);
+                isValid = false;
             }
-            addTransaction(new Expense(name, parseFloat(amount), accountType, category, date, description, subCategory, splitPayment, shares));
+            if (!accountType) {
+                setIsAccountTypeError(true);
+                isValid = false;
+            }
         } else if (selectedTransactionType === TransactionTypes.Income) {
-            if (!name || !amount || !category || !accountType || !date) {
-                return;
+            if (!category) {
+                setIsCategoryError(true);
+                isValid = false;
             }
-            addTransaction(new Income(name, parseFloat(amount), accountType, category, date, description, subCategory, splitPayment, shares));
+            if (!accountType) {
+                setIsAccountTypeError(true);
+                isValid = false;
+            }
         } else if (selectedTransactionType === TransactionTypes.Transfer) {
-            if (!name || !amount || !fromAccount || !toAccount || !date) {
-                return;
+            if (!fromAccount) {
+                setIsFromAccountError(true);
+                isValid = false;
             }
-            addTransaction(new Transfer(name, parseFloat(amount), date, fromAccount, toAccount, description));
+            if (!toAccount) {
+                setIsToAccountError(true);
+                isValid = false;
+            }
         } else if (selectedTransactionType === TransactionTypes.Debt) {
-            if (!name || !amount || !accountType || !debtPerson || !debtType || !date) {
-                return;
+            if (!accountType) {
+                setIsAccountTypeError(true);
+                isValid = false;
             }
-            addTransaction(new Debt(name, parseFloat(amount), accountType, date, debtType, debtPerson, description))
+            if (!debtPerson) {
+                setIsFriendError(true);
+                isValid = false;
+            }
+            if (!debtType) {
+                setIsDebtTypeError(true);
+                isValid = false;
+            }
         }
-        console.log("Added Successfully")
-        clearForm()
+
+        if (!isValid) {
+            console.log("Validation Failed");
+            return; // Stop the function if validation fails
+        }
+
+        // Add the transaction if validation passes
+        if (selectedTransactionType === TransactionTypes.Expense) {
+            addTransaction(
+                new Expense(
+                    name,
+                    parseFloat(amount),
+                    accountType,
+                    category,
+                    date,
+                    description,
+                    subCategory,
+                    splitPayment,
+                    shares
+                )
+            );
+        } else if (selectedTransactionType === TransactionTypes.Income) {
+            addTransaction(
+                new Income(
+                    name,
+                    parseFloat(amount),
+                    accountType,
+                    category,
+                    date,
+                    description,
+                    subCategory,
+                    splitPayment,
+                    shares
+                )
+            );
+        } else if (selectedTransactionType === TransactionTypes.Transfer) {
+            addTransaction(
+                new Transfer(name, parseFloat(amount), date, fromAccount, toAccount, description)
+            );
+        } else if (selectedTransactionType === TransactionTypes.Debt) {
+            addTransaction(
+                new Debt(
+                    name,
+                    parseFloat(amount),
+                    accountType,
+                    date,
+                    debtType,
+                    debtPerson,
+                    description
+                )
+            );
+        }
+
+        console.log("Added Successfully");
+        clearForm();
         props.onClose();
-    }
+    };
+
 
     return <View style={{flex: 1}}>
         {show && (
@@ -150,7 +258,7 @@ const TransactionForm = (props: { onClose: () => void; }) => {
                 </Pressable>
             </View>
             <TextInput
-                style={styles.input}
+                style={[styles.input, isNameError ? {borderColor: "#ff5d5d"} : {}]}
                 placeholder={selectedTransactionType === "Expense" ? "Enter Expense Name" : selectedTransactionType === "Income" ? "Enter Income Name" : selectedTransactionType === "Debt" ? "Enter Debt Name" : "Enter Transfer Name"}
                 placeholderTextColor={Colors.grey["500"]}
                 value={name}
@@ -159,7 +267,7 @@ const TransactionForm = (props: { onClose: () => void; }) => {
                 }}
             />
             <TextInput
-                style={styles.input}
+                style={[styles.input, isAmountError ? {borderColor: "#ff5d5d"} : {}]}
                 placeholder="Enter amount"
                 placeholderTextColor={Colors.grey["500"]}
                 keyboardType="number-pad"
@@ -190,6 +298,7 @@ const TransactionForm = (props: { onClose: () => void; }) => {
                     placeholder="Select Category"
                     showTitle
                     title="Choose a Category"
+                    error={isCategoryError}
                 />
                 <Dropdown
                     items={[
@@ -214,6 +323,7 @@ const TransactionForm = (props: { onClose: () => void; }) => {
                     placeholder="Select Account Type"
                     showTitle
                     title="Choose a Account Type"
+                    error={isAccountTypeError}
                 />
             </>}
             {selectedTransactionType === TransactionTypes.Transfer &&
@@ -228,6 +338,7 @@ const TransactionForm = (props: { onClose: () => void; }) => {
                         placeholder="Select From Account"
                         showTitle
                         title="Choose From Account"
+                        error={isFromAccountError}
                     />
                     <Dropdown
                         items={Object.values(AccountTypes).map((type) => ({
@@ -239,6 +350,7 @@ const TransactionForm = (props: { onClose: () => void; }) => {
                         placeholder="Select To Account"
                         showTitle
                         title="Choose To Account"
+                        error={isToAccountError}
                     />
                 </>
             }
@@ -254,6 +366,7 @@ const TransactionForm = (props: { onClose: () => void; }) => {
                         placeholder="Select Account Type"
                         showTitle
                         title="Choose a Account Type"
+                        error={isAccountTypeError}
                     />
                     <Dropdown
                         items={friends.map((friend) => ({
@@ -269,6 +382,7 @@ const TransactionForm = (props: { onClose: () => void; }) => {
                         addFriendButton={true}
                         showTitle
                         title="Choose a Friend"
+                        error={isFriendError}
                     />
                     <Dropdown
                         gridItemStyle={{width: "50%"}}
@@ -291,6 +405,7 @@ const TransactionForm = (props: { onClose: () => void; }) => {
                         placeholder="Select Debt Type"
                         showTitle
                         title="Choose Debt Type"
+                        error={isDebtTypeError}
                     />
                 </>
             }
@@ -311,6 +426,15 @@ const TransactionForm = (props: { onClose: () => void; }) => {
                 <Text style={styles.buttonText}>Save</Text>
             </Pressable>
         </View>
+        <Snackbar
+            visible={isSnackBarVisible}
+            onDismiss={() => setIsSnackBarVisible(false)}
+            action={{
+                label: 'Close'
+            }}
+        >
+            Fill in all the inputs
+        </Snackbar>
     </View>
 }
 
@@ -334,6 +458,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         marginBottom: 20,
+        marginTop: 10,
     },
     button: {
         flex: 1,

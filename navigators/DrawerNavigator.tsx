@@ -14,7 +14,7 @@ function DrawerNavigator() {
         <Drawer.Navigator screenOptions={{drawerActiveTintColor: "#3b5fff"}}>
             <Drawer.Screen name="Home" component={TabNavigator} options={{headerShown: false}}/>
             <Drawer.Screen name="Friends" component={FriendsScreen} options={{sceneStyle: {backgroundColor: "white"}}}/>
-            <Drawer.Screen name="Settings" component={SettingsScreen}/>
+            {/*<Drawer.Screen name="Settings" component={SettingsScreen}/>*/}
         </Drawer.Navigator>
     );
 }

@@ -49,11 +49,11 @@ function TabNavigator() {
                     ),
                 }}
             />
-            <Tab.Screen name="Stats" component={StatsScreen}
-                        options={{
-                            tabBarIcon: (props =>
-                                <Ionicons name="analytics-sharp" size={24} color={props.color}/>)
-                        }}/>
+            {/*<Tab.Screen name="Stats" component={StatsScreen}*/}
+            {/*            options={{*/}
+            {/*                tabBarIcon: (props =>*/}
+            {/*                    <Ionicons name="analytics-sharp" size={24} color={props.color}/>)*/}
+            {/*            }}/>*/}
             <Tab.Screen name="Accounts" component={AccountsScreen}
                         options={{
                             tabBarIcon: (props =>
@@ -61,7 +61,7 @@ function TabNavigator() {
                         }}/>
             <Tab.Screen name="Debts" component={DebtsScreen}
                         options={{
-                            headerShadowVisible: false,
+                            // headerShadowVisible: false,
                             tabBarIcon: (props =>
                                 <MaterialIcons name="transfer-within-a-station" size={24} color={props.color}/>)
                         }}/>

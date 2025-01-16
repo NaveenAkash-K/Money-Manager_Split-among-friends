@@ -31,6 +31,7 @@ interface DropdownProps {
     showTitle?: boolean;
     label?: string;
     addFriendButton?: boolean;
+    error?: boolean;
 }
 
 const Dropdown: React.FC<DropdownProps> = ({
@@ -49,6 +50,7 @@ const Dropdown: React.FC<DropdownProps> = ({
                                                gridItemTextStyle,
                                                addFriendButton,
                                                label,
+                                               error,
                                                title, // Modal title
                                                titleStyle, // Custom style for the title
                                                showTitle, // Option to show or hide the title
@@ -62,7 +64,7 @@ const Dropdown: React.FC<DropdownProps> = ({
     const [isAddFriendModalVisible, setIsAddFriendModalVisible] = useState(false)
 
     return (
-        <View style={[styles.container, containerStyle]}>
+        <View style={[styles.container, containerStyle, error ? {borderColor: "#ff5d5d"} : {borderColor: "transparent"}]}>
             {/* Dropdown Button */}
             <AddFriendsModal isVisible={isAddFriendModalVisible} onClose={() => setIsAddFriendModalVisible(false)}
                              title={"Add Friends"}/>
@@ -139,6 +141,8 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         borderRadius: 8,
         overflow: "hidden",
+        borderWidth: 1,
+        borderColor: "transparent",
     },
     dropdownButton: {
         backgroundColor: "#f7f7f7",

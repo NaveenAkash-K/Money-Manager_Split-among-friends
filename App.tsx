@@ -11,16 +11,19 @@ import DrawerNavigator from "./navigators/DrawerNavigator";
 // import DrawerNavigator from "./navigators/DrawerNavigator";
 import useTransactionsStore from "./store/useTransactionsStore";
 import transactionsStoreSerializer from "./utils/transactionsStoreSerializer";
+import {PaperProvider} from "react-native-paper";
 
 // enableScreens()
 
 export default function App() {
     return (
-        <GestureHandlerRootView>
-            <NavigationContainer>
-                <DrawerNavigator/>
-            </NavigationContainer>
-        </GestureHandlerRootView>
+        <PaperProvider>
+            <GestureHandlerRootView>
+                <NavigationContainer>
+                    <DrawerNavigator/>
+                </NavigationContainer>
+            </GestureHandlerRootView>
+        </PaperProvider>
     );
 }
 

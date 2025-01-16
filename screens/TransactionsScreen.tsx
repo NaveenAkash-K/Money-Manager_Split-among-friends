@@ -56,7 +56,6 @@ const TransactionsScreen = () => {
     const renderTransaction = ({item}: { item: typeof transactions[0] }) => {
         return <TransactionListItem data={item}/>
     };
-
     return (
         <View style={styles.transactionsScreen}>
             {isTransactionModalVisible && <TransactionModal isVisible={isTransactionModalVisible} onClose={() => {
