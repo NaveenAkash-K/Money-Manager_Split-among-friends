@@ -12,6 +12,8 @@ import useTransactionFormStore from "../store/useTransactionFormStore";
 import DateChanger from "../components/transactionsScreen/DateChanger";
 import useNonPersistStore from "../store/useNonPersistStore";
 import filterTransactions from "../utils/filterTransactions";
+import uuid from "react-native-uuid";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const TransactionsScreen = () => {
     // Static plain object array for transactions
@@ -20,6 +22,15 @@ const TransactionsScreen = () => {
     const {transactions} = useTransactionsStore();
     const {clearForm} = useTransactionFormStore();
     const [filteredTransactions, setFilteredTransactions] = useState(transactions);
+
+    const {
+        getTotalIncome,
+        getTotalExpense,
+        getTotalBalanceAfterSettlement,
+        getTotalPayableDebt,
+        getTotalReceivableDebt,
+        getTotalBalance
+    } = useTransactionsStore();
 
     useEffect(() => {
         const filtered = filterTransactions(transactions, transactionDate);
@@ -95,6 +106,8 @@ const TransactionsScreen = () => {
                 style={styles.fab}
                 onPress={() => {
                     // clearForm()
+                    // AsyncStorage.clear()
+                    // console.log(getTotalIncome(transactionDate))
                     setIsTransactionModalVisible(true)
                 }}
             />

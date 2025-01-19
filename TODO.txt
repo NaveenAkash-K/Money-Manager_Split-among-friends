@@ -1,26 +1,30 @@
 Pending Tasks
+[-] - Add a separate page to manage categories and subcategories
+[-] - Make Categories and sub categories dynamic
+[ ] - Add a option to settle debt amount partially or fully.
 [ ] - Make Text Input as Separate reusable component
 [ ] - Create a modal to choose friends with search
 [ ] - Add a Month + Month changer, All date range filter in Accounts Screen
-[ ] - Look for a better Error indicating approch in Transactions Form
+[ ] - Look for a better Error indicating approach in Transactions Form
 [ ] - Remove the percentage label in chart If the percentage is below 10
 [ ] - Show the amount of particular bar of chart is pressed
-[ ] - Show seperate sub categories for each category
 [ ] - Create a modal to show temporary transactions
 [ ] - Enable option to select transactions on long press
 [ ] - Enable editing transactions
 [ ] - Enable Deleting transactions
-[ ] - Make Cateogries and sub categories dynamic
 [ ] - Add switch in settings Screen to enable sub categories
-[ ] - Add a seperate page to manage categories and subcategories
 [ ] - Enable scroll in accounts screen
 [ ] - Modify Color scheme file and use it all over the app
 [ ] - Create a text theme + font to use it all over the app
 [ ] - Show the balance in accounts in transactions form when transfer is selected
 [ ] - Show the after balance computation before proceeding to transfer money between accounts
+[ ] - Show sum of income and expense for particular day at the date header
+[ ] - Add a option to enable deduct dept from account or not
+[ ] - Add a paid or fully paid option in debt
 
 
 Completed Tasks
+[x] - Show separate sub categories for each category
 [x] - Design Mini Stats
 [x] - Enable animation in Mini Stats to reveal debts stats
 [x] - Design Transaction Item

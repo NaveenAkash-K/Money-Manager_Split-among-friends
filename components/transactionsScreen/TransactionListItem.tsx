@@ -1,10 +1,13 @@
 import Colors from "../../constants/Colors";
 import {Pressable, StyleSheet, Text, View} from "react-native";
 import TransactionTypes from "../../types/TransactionTypes";
-import React from "react";
+import React, {useState} from "react";
 import AccountTypes from "../../types/AccountTypes";
 import Friend from "../../models/Friend";
 import DebtTypes from "../../types/DebtTypes";
+import useSubCategoriesStore from "../../store/useSubCategoriesStore";
+import useCategoriesStore from "../../store/useCategoriesStore";
+import SettleDebtModal from "../debtsScreen/SettleDebtModal";
 
 const TransactionListItem = (props: {
     data: {
@@ -22,22 +25,41 @@ const TransactionListItem = (props: {
         amount: number;
     };
 }) => {
+    const [isSettleDebtModalVisible, setIsSettleDebtModalVisible] = useState(false);
+    const {subCategories} = useSubCategoriesStore()
+    const {categories} = useCategoriesStore()
+
     return <Pressable
         android_ripple={{color: Colors.grey["300"]}}
         onPress={() => {
+            if (props.data.type === TransactionTypes.Debt) {
+                setIsSettleDebtModalVisible(true);
+            }
         }}
         // background={TouchableNativeFeedback.Ripple(Colors.grey[300], true)}
         style={[styles.transactionItem, {}]}
     >
+        {props.data.type === TransactionTypes.Debt && <SettleDebtModal
+            isVisible={isSettleDebtModalVisible}
+            onClose={() => {
+                setIsSettleDebtModalVisible(false)
+            }}
+            paymentLogs={[
+                { date: "2024-12-01", amount: 200, method: "Cash" },
+                { date: "2024-12-10", amount: 300, method: "Bank Transfer" },
+            ]}
+            data={props.data}
+        />}
 
         <View style={styles.transactionDetails}>
             {/* Left section with category and sub-category */}
             {<View style={styles.categoryContainer}>
                 <Text style={styles.category} numberOfLines={1}>
-                    {props.data.type === TransactionTypes.Transfer ? "Transfer" : props.data.type === TransactionTypes.Debt ? "Debt" : props.data.category}
+                    {props.data.type === TransactionTypes.Transfer ? "Transfer" : props.data.type === TransactionTypes.Debt ? "Debt" : categories![props.data.type]!.find(cat => cat.id === props.data.category)!.name}
                 </Text>
                 {(props.data.subCategory && props.data.type !== TransactionTypes.Transfer && props.data.type !== TransactionTypes.Debt) && (
-                    <Text style={styles.subCategory}>{props.data.subCategory}</Text>
+                    <Text numberOfLines={1}
+                          style={styles.subCategory}>{subCategories[props.data.category!].find(subCat => subCat.id === props.data.subCategory)!.name}</Text>
                 )}
             </View>}
 

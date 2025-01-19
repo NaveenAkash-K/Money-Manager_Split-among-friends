@@ -14,6 +14,7 @@ import TransactionTypes from "../types/TransactionTypes";
 import Share from "../models/Share";
 import transactionsStoreSerializer from "../utils/transactionsStoreSerializer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import transaction from "../models/Transaction";
 
 interface TransactionState {
     transactions: Transaction[];
@@ -49,22 +50,35 @@ const useTransactionsStore = create<TransactionState>()(
                 // Filter transactions based on date and account type
                 const filteredTransactions = transactions.filter(transaction => {
                     const transactionDateObj = new Date(transaction.date);
-                    const isDateMatch = transactionDate
-                        ? transactionDateObj.toDateString() === new Date(transactionDate).toDateString()
+                    const isMonthMatch = transactionDate
+                        ? transactionDateObj.getMonth() === new Date(transactionDate).getMonth()
                         : true;
                     const isAccountMatch = accountType
                         ? transaction.accountType === accountType
                         : true;
-                    return isDateMatch && isAccountMatch;
+                    return isMonthMatch && isAccountMatch;
                 });
 
                 const incomingTransfers = get().transactions.filter(transaction => (transaction.type === TransactionTypes.Transfer && transaction.toAccount === accountType));
 
                 const incomeTransferAmount = incomingTransfers.reduce((acc, transfer) => transfer.amount, 0);
 
-                return filteredTransactions
+                const debtTransactions = get().transactions.filter(transaction => {
+                    const isAccountMatch = accountType
+                        ? transaction.accountType === accountType
+                        : true;
+                    return (isAccountMatch && transaction.type === TransactionTypes.Debt && transaction.debtType === DebtTypes.Owe && transaction.applyToBalance)
+                });
+
+                const debtAmountToBeAdded = debtTransactions.reduce((acc, debt) => debt.amount + acc, 0);
+
+                const incomeAmount = filteredTransactions
                     .filter((transaction) => transaction.type === TransactionTypes.Income)
-                    .reduce((sum, income) => sum + income.amount, 0) + incomeTransferAmount;
+                    .reduce((sum, income) => sum + income.amount, 0);
+                console.log(incomeAmount)
+                console.log(incomeTransferAmount)
+                console.log(debtAmountToBeAdded)
+                return incomeAmount + incomeTransferAmount + debtAmountToBeAdded
             },
             getTotalExpense: (transactionDate, accountType) => {
                 const transactions = get().transactions;
@@ -72,21 +86,32 @@ const useTransactionsStore = create<TransactionState>()(
                 // Filter transactions based on date and account type
                 const filteredTransactions = transactions.filter(transaction => {
                     const transactionDateObj = new Date(transaction.date);
-                    const isDateMatch = transactionDate
-                        ? transactionDateObj.toDateString() === new Date(transactionDate).toDateString()
+                    const isMonthMatch = transactionDate
+                        ? transactionDateObj.getMonth() === new Date(transactionDate).getMonth()
                         : true;
                     const isAccountMatch = accountType
                         ? transaction.accountType === accountType
                         : true;
-                    return isDateMatch && isAccountMatch;
+                    return isMonthMatch && isAccountMatch;
                 });
 
                 const outgoingTransfers = get().transactions.filter(transaction => (transaction.type === TransactionTypes.Transfer && transaction.fromAccount === accountType));
                 const outgoingTransferAmount = outgoingTransfers.reduce((acc, transfer) => transfer.amount, 0);
 
-                return filteredTransactions
+                const debtTransactions = get().transactions.filter(transaction => {
+                    const isAccountMatch = accountType
+                        ? transaction.accountType === accountType
+                        : true;
+                    return (isAccountMatch && transaction.type === TransactionTypes.Debt && transaction.debtType === DebtTypes.Owes && transaction.applyToBalance)
+                });
+
+                const debtAmountToBeDeducted = debtTransactions.reduce((acc, debt) => debt.amount + acc, 0);
+
+                const expenseAmount = filteredTransactions
                     .filter((transaction) => transaction.type === TransactionTypes.Expense)
                     .reduce((sum, expense) => sum + expense.amount, 0) + outgoingTransferAmount;
+
+                return expenseAmount + outgoingTransferAmount + debtAmountToBeDeducted;
             },
 
             getTotalPayableDebt: (transactionDate?: Date, accountType?: AccountTypes, friendId?: string) => {
@@ -97,8 +122,8 @@ const useTransactionsStore = create<TransactionState>()(
 
                 const filteredTransactions = debtTransactions.filter((transaction) => {
                     const transactionDateObj = new Date(transaction.date);
-                    const isDateMatch = transactionDate
-                        ? transactionDateObj.toDateString() === new Date(transactionDate).toDateString()
+                    const isMonthMatch = transactionDate
+                        ? transactionDateObj.getMonth() === new Date(transactionDate).getMonth()
                         : true;
                     const isAccountMatch = accountType
                         ? transaction.accountType === accountType
@@ -106,7 +131,7 @@ const useTransactionsStore = create<TransactionState>()(
                     const isFriendMatch = friendId
                         ? transaction.debtPerson.id === friendId // Match friend ID if provided
                         : true;
-                    return isDateMatch && isAccountMatch && isFriendMatch;
+                    return isMonthMatch && isAccountMatch && isFriendMatch;
                 });
 
                 return filteredTransactions
@@ -127,8 +152,8 @@ const useTransactionsStore = create<TransactionState>()(
                 // Filter transactions based on date, account type, and friend (if provided)
                 const filteredTransactions = debtTransactions.filter((transaction) => {
                     const transactionDateObj = new Date(transaction.date);
-                    const isDateMatch = transactionDate
-                        ? transactionDateObj.toDateString() === new Date(transactionDate).toDateString()
+                    const isMonthMatch = transactionDate
+                        ? transactionDateObj.getMonth() === new Date(transactionDate).getMonth()
                         : true;
                     const isAccountMatch = accountType
                         ? transaction.accountType === accountType
@@ -136,7 +161,7 @@ const useTransactionsStore = create<TransactionState>()(
                     const isFriendMatch = friendId
                         ? transaction.debtPerson.id === friendId // Match friend ID if provided
                         : true;
-                    return isDateMatch && isAccountMatch && isFriendMatch;
+                    return isMonthMatch && isAccountMatch && isFriendMatch;
                 });
 
                 return filteredTransactions
@@ -145,7 +170,6 @@ const useTransactionsStore = create<TransactionState>()(
                     )
                     .reduce((sum, debt) => sum + debt.amount, 0);
             },
-
 
             getTotalBalanceAfterSettlement: (transactionDate) => {
                 const totalIncome = get().getTotalIncome(transactionDate);

@@ -13,7 +13,7 @@ interface DropdownItem {
 }
 
 interface DropdownProps {
-    items: DropdownItem[];
+    items: DropdownItem[] | undefined;
     selectedValue?: string | number;
     onSelect: (item: DropdownItem) => void;
     placeholder?: string;
@@ -26,6 +26,7 @@ interface DropdownProps {
     modalBodyStyle?: ViewStyle;
     gridItemStyle?: ViewStyle;
     gridItemTextStyle?: TextStyle;
+    fallbackTextOnEmptyItems?: string;
     title?: string;
     titleStyle?: TextStyle;
     showTitle?: boolean;
@@ -49,6 +50,7 @@ const Dropdown: React.FC<DropdownProps> = ({
                                                gridItemStyle,
                                                gridItemTextStyle,
                                                addFriendButton,
+                                               fallbackTextOnEmptyItems,
                                                label,
                                                error,
                                                title, // Modal title
@@ -64,10 +66,11 @@ const Dropdown: React.FC<DropdownProps> = ({
     const [isAddFriendModalVisible, setIsAddFriendModalVisible] = useState(false)
 
     return (
-        <View style={[styles.container, containerStyle, error ? {borderColor: "#ff5d5d"} : {borderColor: "transparent"}]}>
+        <View
+            style={[styles.container, containerStyle, error ? {borderColor: "#ff5d5d"} : {borderColor: "transparent"}]}>
             {/* Dropdown Button */}
-            <AddFriendsModal isVisible={isAddFriendModalVisible} onClose={() => setIsAddFriendModalVisible(false)}
-                             title={"Add Friends"}/>
+            {<AddFriendsModal isVisible={isAddFriendModalVisible} onClose={() => setIsAddFriendModalVisible(false)}
+                              title={"Add Friends"}/>}
             <Pressable
                 style={[styles.dropdownButton, dropdownButtonStyle]}
                 onPress={() => setIsDropdownVisible(true)}
@@ -94,6 +97,7 @@ const Dropdown: React.FC<DropdownProps> = ({
                 onSwipeComplete={() => setIsDropdownVisible(false)}
                 swipeDirection="down"
                 backdropTransitionOutTiming={10}
+                animationOutTiming={150}
                 propagateSwipe={true}
                 style={[styles.modal, modalStyle]}
             >
@@ -110,10 +114,10 @@ const Dropdown: React.FC<DropdownProps> = ({
                     {/* Grid Content */}
                     <ScrollView>
                         <View style={styles.gridContainer}>
-                            {items.map((item, index) => {
+                            {(items && items.length > 0) ? items.map((item, index) => {
                                 return <Pressable
                                     key={index}
-                                    style={[styles.gridItem, gridItemStyle]}
+                                    style={[styles.gridItem, gridItemStyle, selectedValue === item.value ? {backgroundColor:"rgba(59,95,255,0.07)"} : {}]}
                                     onPress={() => {
                                         onSelect(item);
                                         setSelectedLocal(item);
@@ -121,11 +125,17 @@ const Dropdown: React.FC<DropdownProps> = ({
                                     }}
                                     android_ripple={{color: "#ddd"}}
                                 >
-                                    <Text style={[styles.gridItemText, gridItemTextStyle]}>
+                                    <Text style={[styles.gridItemText, gridItemTextStyle, selectedValue === item.value ? {color:"#3b5fff"} : {}]}>
                                         {item.label}
                                     </Text>
                                 </Pressable>
-                            })}
+                            }) : <Text style={{
+                                flex: 1,
+                                textAlign: "center",
+                                fontWeight: "bold",
+                                marginVertical: 100,
+                                fontSize:16
+                            }}>{fallbackTextOnEmptyItems}</Text>}
                         </View>
                     </ScrollView>
                 </View>

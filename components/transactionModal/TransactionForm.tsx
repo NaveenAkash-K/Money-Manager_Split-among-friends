@@ -17,7 +17,9 @@ import Transfer from "../../models/Transfer";
 import Debt from "../../models/Debt";
 import Dropdown from "../common/Dropdown";
 import useFriendsStore from "../../store/useFriendsStore";
-import {Portal, Snackbar} from "react-native-paper";
+import {Snackbar} from "react-native-paper";
+import useCategoriesStore from "../../store/useCategoriesStore";
+import useSubCategoriesStore from "../../store/useSubCategoriesStore";
 
 const data = [
     {key: '1', value: 'Mobiles',},
@@ -47,7 +49,11 @@ const TransactionForm = (props: { onClose: () => void; }) => {
         selectedTransactionType,
         setValue,
         clearForm,
+        applyToBalance
     } = useTransactionFormStore();
+
+    const {categories} = useCategoriesStore()
+    const {subCategories} = useSubCategoriesStore()
 
     const {addTransaction} = useTransactionsStore();
     const [isSnackBarVisible, setIsSnackBarVisible] = useState(false)
@@ -129,9 +135,11 @@ const TransactionForm = (props: { onClose: () => void; }) => {
                 isValid = false;
             }
         } else if (selectedTransactionType === TransactionTypes.Debt) {
-            if (!accountType) {
-                setIsAccountTypeError(true);
-                isValid = false;
+            if (applyToBalance) {
+                if (!accountType) {
+                    setIsAccountTypeError(true);
+                    isValid = false;
+                }
             }
             if (!debtPerson) {
                 setIsFriendError(true);
@@ -186,11 +194,12 @@ const TransactionForm = (props: { onClose: () => void; }) => {
                 new Debt(
                     name,
                     parseFloat(amount),
-                    accountType,
                     date,
                     debtType,
                     debtPerson,
-                    description
+                    applyToBalance,
+                    accountType,
+                    description,
                 )
             );
         }
@@ -287,12 +296,15 @@ const TransactionForm = (props: { onClose: () => void; }) => {
             />
             {(selectedTransactionType === TransactionTypes.Expense || selectedTransactionType === TransactionTypes.Income) && <>
                 <Dropdown
-                    items={[
-                        {label: "Food", value: "Food"},
-                        {label: "Transport", value: "Transport"},
-                        {label: "Entertainment", value: "Entertainment"},
-                        {label: "Shopping", value: "Shopping"}
-                    ]}
+                    // items={[
+                    //     {label: "Food", value: "Food"},
+                    //     {label: "Transport", value: "Transport"},
+                    //     {label: "Entertainment", value: "Entertainment"},
+                    //     {label: "Shopping", value: "Shopping"}
+                    // ]}
+                    items={categories![selectedTransactionType]!.map(category => {
+                        return {label: category.name, value: category.id}
+                    })}
                     selectedValue={category}
                     onSelect={(item) => setValue({field: "category", value: item.value})}
                     placeholder="Select Category"
@@ -301,15 +313,13 @@ const TransactionForm = (props: { onClose: () => void; }) => {
                     error={isCategoryError}
                 />
                 <Dropdown
-                    items={[
-                        {label: "Food", value: "Food"},
-                        {label: "Transport", value: "Transport"},
-                        {label: "Entertainment", value: "Entertainment"},
-                        {label: "Shopping", value: "Shopping"}
-                    ]}
+                    items={category ? subCategories![category!]!.map(subCategory => {
+                        return {label: subCategory.name, value: subCategory.id};
+                    }) : []}
                     selectedValue={subCategory}
                     onSelect={(item) => setValue({field: "subCategory", value: item.value})}
                     placeholder="Select Sub Category"
+                    fallbackTextOnEmptyItems={"Please select a category first"}
                     showTitle
                     title="Choose a Sub Category"
                 />
@@ -357,18 +367,6 @@ const TransactionForm = (props: { onClose: () => void; }) => {
             {selectedTransactionType === TransactionTypes.Debt &&
                 <>
                     <Dropdown
-                        items={Object.values(AccountTypes).map((type) => ({
-                            label: type,
-                            value: type,
-                        }))}
-                        selectedValue={accountType}
-                        onSelect={(item) => setValue({field: "accountType", value: item.value})}
-                        placeholder="Select Account Type"
-                        showTitle
-                        title="Choose a Account Type"
-                        error={isAccountTypeError}
-                    />
-                    <Dropdown
                         items={friends.map((friend) => ({
                             label: friend.name,
                             value: friend.id,
@@ -407,17 +405,62 @@ const TransactionForm = (props: { onClose: () => void; }) => {
                         title="Choose Debt Type"
                         error={isDebtTypeError}
                     />
+                    {debtType && <>
+                        <View style={{backgroundColor: Colors.grey["600"], height: 1, width: "100%"}}/>
+                        <View style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            marginVertical: 10
+                        }}>
+                            <View style={{}}>
+                                <Text style={{
+                                    fontSize: 18,
+                                    fontWeight: "500"
+                                }}>{debtType === DebtTypes.Owe ? amount ? ("Add ₹ " + amount + " to balance") : "Add to balance" : amount ? ("Deduct ₹ " + amount + " from balance") : "Deduct from balance"}</Text>
+                                <Text style={{
+                                    fontSize: 10,
+                                    color: Colors.grey["500"]
+                                    // fontWeight: "500"
+                                }}>{debtType === DebtTypes.Owe ? "This amount will be added as income" : "This amount will be added as expense"}</Text>
+                            </View>
+                            <Switch style={{}} value={applyToBalance} onChange={() => {
+                                setValue({field: "applyToBalance", value: !applyToBalance})
+                            }}/>
+                        </View>
+                        {applyToBalance && <Dropdown
+                            items={Object.values(AccountTypes).map((type) => ({
+                                label: type,
+                                value: type,
+                            }))}
+                            selectedValue={accountType}
+                            onSelect={(item) => setValue({field: "accountType", value: item.value})}
+                            placeholder="Select Account Type"
+                            showTitle
+                            title="Choose a Account Type"
+                            error={isAccountTypeError}
+                        />}
+                    </>}
                 </>
             }
-            {(selectedTransactionType === "Income" || selectedTransactionType === "Expense") && <>
-                <View style={{backgroundColor: Colors.grey["600"], height: 1, width: "100%"}}/>
-                <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-between"}}>
-                    <Text style={{fontSize: 18, fontWeight: "500"}}>Split Payment</Text>
-                    <Switch style={{}} value={splitPayment} onChange={() => {
-                        setValue({field: "splitPayment", value: !splitPayment})
-                    }}/>
-                </View>
-            </>}
+            {/*{(selectedTransactionType === "Income" || selectedTransactionType === "Expense") && <>*/
+            }
+            {/*    <View style={{backgroundColor: Colors.grey["600"], height: 1, width: "100%"}}/>*/
+            }
+            {/*    <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-between"}}>*/
+            }
+            {/*        <Text style={{fontSize: 18, fontWeight: "500"}}>Split Payment</Text>*/
+            }
+            {/*        <Switch style={{}} value={splitPayment} onChange={() => {*/
+            }
+            {/*            setValue({field: "splitPayment", value: !splitPayment})*/
+            }
+            {/*        }}/>*/
+            }
+            {/*    </View>*/
+            }
+            {/*</>}*/
+            }
         </ScrollView>
         <View style={styles.buttonContainer}>
             <Pressable style={[styles.button, styles.addButton]}

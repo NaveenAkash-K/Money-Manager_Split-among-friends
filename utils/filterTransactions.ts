@@ -6,7 +6,7 @@ const filterTransactions = (transactions: Transaction[], transactionDate: Date) 
     // Filter transactions based on the provided transactionDate
     return transactions.filter(transaction => {
         const transactionDateObj = new Date(transaction.date);
-        return transactionDateObj.toDateString() === new Date(transactionDate).toDateString(); // Compare only the date part
+        return transactionDateObj.getMonth() === new Date(transactionDate).getMonth();
     });
 };
 

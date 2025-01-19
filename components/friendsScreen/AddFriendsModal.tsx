@@ -1,6 +1,6 @@
 import {ReactNativeModal} from "react-native-modal";
 import {Pressable, StyleSheet, Text, TextInput, View} from "react-native";
-import React, {useState} from "react";
+import React, {useLayoutEffect, useState} from "react";
 import Colors from "../../constants/Colors";
 import useFriendsStore from "../../store/useFriendsStore";
 import Friend from "../../models/Friend";
@@ -11,6 +11,12 @@ const AddFriendsModal = (props: any) => {
     const [email, setEmail] = useState<string | undefined>()
 
     const {addFriend} = useFriendsStore();
+
+    useLayoutEffect(() => {
+        setName(undefined)
+        setPhoneNo(undefined)
+        setEmail(undefined)
+    }, [props.isVisible]);
 
     return <ReactNativeModal
         isVisible={props.isVisible}

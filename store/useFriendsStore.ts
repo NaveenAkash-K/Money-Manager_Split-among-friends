@@ -5,14 +5,14 @@ import Friend from "../models/Friend";
 import secureStorage from "../secureStorage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-interface FriendsStore {
+interface FriendsStoreState {
     friends: Friend[];
     addFriend: (friend: Friend) => void;
     removeFriend: (id: string) => void;
 }
 
 const useFriendsStore = create(
-    persist<FriendsStore>(
+    persist<FriendsStoreState>(
         (set) => ({
             // Properties
             friends: [],

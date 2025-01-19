@@ -22,6 +22,7 @@ interface TransactionFormState {
     //Debt
     debtPerson?: Friend;
     debtType?: DebtTypes;
+    applyToBalance: boolean;
 
     //Transfer
     fromAccount?: AccountTypes;
@@ -38,6 +39,7 @@ const useTransactionFormStore = create<TransactionFormState>()(
         splitPayment: false,
         date: new Date(),
         selectedTransactionType: TransactionTypes.Expense,
+        applyToBalance: false,
 
         setValue: (payload: { field: string, value: any }) =>
             set((state) => ({
@@ -61,6 +63,7 @@ const useTransactionFormStore = create<TransactionFormState>()(
                 fromAccount: undefined,
                 toAccount: undefined,
                 date: new Date(),
+                applyToBalance: false
             })),
 
     }),
