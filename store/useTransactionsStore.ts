@@ -15,6 +15,7 @@ import Share from "../models/Share";
 import transactionsStoreSerializer from "../utils/transactionsStoreSerializer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import transaction from "../models/Transaction";
+import {plainToClass, plainToInstance} from "class-transformer";
 
 interface TransactionState {
     transactions: Transaction[];
@@ -67,6 +68,7 @@ const useTransactionsStore = create<TransactionState>()(
                     const isAccountMatch = accountType
                         ? transaction.accountType === accountType
                         : true;
+
                     return (isAccountMatch && transaction.type === TransactionTypes.Debt && transaction.debtType === DebtTypes.Owe && transaction.applyToBalance)
                 });
 
@@ -75,10 +77,9 @@ const useTransactionsStore = create<TransactionState>()(
                 const incomeAmount = filteredTransactions
                     .filter((transaction) => transaction.type === TransactionTypes.Income)
                     .reduce((sum, income) => sum + income.amount, 0);
-                console.log(incomeAmount)
-                console.log(incomeTransferAmount)
-                console.log(debtAmountToBeAdded)
+
                 return incomeAmount + incomeTransferAmount + debtAmountToBeAdded
+                // return incomeAmount + incomeTransferAmount
             },
             getTotalExpense: (transactionDate, accountType) => {
                 const transactions = get().transactions;
@@ -190,9 +191,33 @@ const useTransactionsStore = create<TransactionState>()(
         }),
         {
             name: "transactionsStore",
-            storage: createJSONStorage(() => AsyncStorage),
+            storage: createJSONStorage(() => AsyncStorage)
+            // storage: {
+            //     getItem: async (name) => {
+            //         const json = await AsyncStorage.getItem(name);
+            //         if (json) {
+            //             const plainArray = JSON.parse(json);
+            //             const transformedArray = plainArray.state.transactions.map((obj: any) => {
+            //                 if (obj.type === TransactionTypes.Debt) {
+            //                     return plainToInstance(Debt, obj)
+            //                 } else if (obj.type === TransactionTypes.Transfer) {
+            //                     return plainToInstance(Transfer, obj)
+            //                 } else if (obj.type === TransactionTypes.Income) {
+            //                     return plainToInstance(Income, obj)
+            //                 } else if (obj.type === TransactionTypes.Expense) {
+            //                     return plainToInstance(Expense, obj)
+            //                 }
+            //             });
+            //             return {"state": {"transactions": transformedArray}};
+            //         }
+            //         return {"state": {"transactions": []}};
+            //     },
+            //     setItem: AsyncStorage.setItem,
+            //     removeItem: AsyncStorage.removeItem
+            // },
         }
     )
 );
+
 
 export default useTransactionsStore;

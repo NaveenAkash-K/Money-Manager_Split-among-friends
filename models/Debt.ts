@@ -11,7 +11,7 @@ class Debt extends Transaction {
     accountType?: AccountTypes;
     debtPerson: Friend;
     applyToBalance: boolean;
-    settled: boolean;
+    settled: boolean = false;
     settlements: Settlement[] = [];
 
     constructor(
@@ -21,7 +21,7 @@ class Debt extends Transaction {
         debtType: DebtTypes,
         debtPerson: Friend,
         applyToBalance: boolean,
-        settled: boolean,
+        settled: boolean = false,
         accountType?: AccountTypes,
         description?: string,
     ) {

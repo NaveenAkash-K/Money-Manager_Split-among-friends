@@ -198,6 +198,7 @@ const TransactionForm = (props: { onClose: () => void; }) => {
                     debtType,
                     debtPerson,
                     applyToBalance,
+                    false,
                     accountType,
                     description,
                 )

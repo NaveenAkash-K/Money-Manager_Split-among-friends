@@ -1,7 +1,11 @@
 import React, {useState} from "react";
 import Modal from "react-native-modal";
-import {StyleSheet, Text, TextInput, TouchableOpacity, View, FlatList, Pressable} from "react-native";
+import {FlatList, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
 import Colors from "../../constants/Colors";
+import {plainToInstance} from "class-transformer";
+import Debt from "../../models/Debt";
+import DebtTypes from "../../types/DebtTypes";
+import Friend from "../../models/Friend";
 
 const SettleDebtModal = (props) => {
     const [settlementType, setSettlementType] = useState(null); // Tracks "partial" or "full"
@@ -9,7 +13,7 @@ const SettleDebtModal = (props) => {
     const [error, setError] = useState(""); // Tracks validation errors
 
     // Calculate remaining debt after deducting payment logs
-    const totalPaid = props.paymentLogs.reduce((acc, log) => acc + parseFloat(log.amount), 0);
+    const totalPaid = props.data.settlements.reduce((acc, log) => acc + parseFloat(log.amount), 0);
     const remainingDebt = props.data.amount - totalPaid;
 
     const handleSettle = () => {
@@ -75,7 +79,7 @@ const SettleDebtModal = (props) => {
                         <Text style={styles.value}>₹{props.data.amount.toLocaleString()}</Text>
                     </View>
                     <View style={styles.row}>
-                        <Text style={styles.label}>Debtor's Name:</Text>
+                        <Text style={styles.label}>Friend's Name:</Text>
                         <Text style={styles.value}>{props.data.debtPerson.name}</Text>
                     </View>
                     <View style={styles.row}>
@@ -83,10 +87,10 @@ const SettleDebtModal = (props) => {
                         <Text
                             style={[
                                 styles.value,
-                                {color: remainingDebt > 0 ? "red" : "green"},
+                                {color: Colors.income.main},
                             ]}
                         >
-                            ₹{remainingDebt.toFixed(2)}
+                            ₹{totalPaid.toFixed(2)}
                         </Text>
                     </View>
                     <View style={styles.row}>
@@ -103,9 +107,9 @@ const SettleDebtModal = (props) => {
 
                     {/* Payment Logs */}
                     <Text style={[styles.sectionTitle, {marginTop: 10}]}>Settlement Logs</Text>
-                    {props.paymentLogs.length > 0 ? (
+                    {props.data.settlements.length > 0 ? (
                         <FlatList
-                            data={props.paymentLogs}
+                            data={props.data.settlements}
                             renderItem={renderSettlementLog}
                             keyExtractor={(item, index) => index.toString()}
                             contentContainerStyle={styles.logList}
@@ -229,7 +233,7 @@ const styles = StyleSheet.create({
     },
     label: {
         fontSize: 16,
-        color: "#555",
+        color: "#444",
         fontWeight: "600",
     },
     value: {
@@ -286,6 +290,7 @@ const styles = StyleSheet.create({
         color: "#999",
         textAlign: "center",
         marginTop: 10,
+        marginBottom: 30
     },
     optionsContainer: {
         flexDirection: "row",

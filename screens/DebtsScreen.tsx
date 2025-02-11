@@ -206,7 +206,7 @@ const DebtsScreen = () => {
                             size={18} color="black"/>
                     </Pressable>
                 </View>
-                {(getTotalReceivableDebt() === 0 || getTotalPayableDebt() === 0) ?
+                {(getTotalReceivableDebt() === 0 && getTotalPayableDebt() === 0) ?
                     <Text style={{textAlign: "center", fontWeight: "600", marginTop: 50}}>
                         No Debts</Text> :
                     sortedDebtFriends.map(friend => {

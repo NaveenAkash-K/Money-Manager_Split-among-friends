@@ -21,6 +21,8 @@ const AccountsScreen = () => {
     const {getTotalIncome, getTotalExpense, getTotalBalance} = useTransactionsStore();
     const translateX = useSharedValue(0);
 
+    console.log(getTotalIncome(undefined, AccountTypes.Cash))
+
     return (
         <View>
             <AccountsChart/>

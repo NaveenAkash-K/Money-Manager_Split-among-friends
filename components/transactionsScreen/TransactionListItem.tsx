@@ -8,6 +8,11 @@ import DebtTypes from "../../types/DebtTypes";
 import useSubCategoriesStore from "../../store/useSubCategoriesStore";
 import useCategoriesStore from "../../store/useCategoriesStore";
 import SettleDebtModal from "../debtsScreen/SettleDebtModal";
+import Settlement from "../../types/Settlement";
+import Debt from "../../models/Debt";
+import Income from "../../models/Income";
+import Transfer from "../../models/Transfer";
+import Expense from "../../models/Expense";
 
 const TransactionListItem = (props: {
     data: {
@@ -23,11 +28,17 @@ const TransactionListItem = (props: {
         toAccount?: AccountTypes
         date: Date;
         amount: number;
-    };
+    } | Debt | Income | Transfer | Expense;
 }) => {
+
     const [isSettleDebtModalVisible, setIsSettleDebtModalVisible] = useState(false);
     const {subCategories} = useSubCategoriesStore()
     const {categories} = useCategoriesStore()
+
+    if (props.data.type === TransactionTypes.Debt) {
+        props.data.addSettlement({amount: "50", createdAt: new Date(), id: "1"});
+    }
+    // console.log(props.)
 
     return <Pressable
         android_ripple={{color: Colors.grey["300"]}}
@@ -44,10 +55,6 @@ const TransactionListItem = (props: {
             onClose={() => {
                 setIsSettleDebtModalVisible(false)
             }}
-            paymentLogs={[
-                { date: "2024-12-01", amount: 200, method: "Cash" },
-                { date: "2024-12-10", amount: 300, method: "Bank Transfer" },
-            ]}
             data={props.data}
         />}
 
