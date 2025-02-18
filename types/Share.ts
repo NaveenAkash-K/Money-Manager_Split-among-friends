@@ -1,7 +1,13 @@
-import {Friend} from "./Friends";
-
-export interface Share {
-    id: string;
-    friend: Friend;
-    amount: number;
-}
+export type Share =
+    {
+        readonly id: string;
+        amount: number;
+        userType: "self";
+    }
+    |
+    {
+        readonly id: string;
+        personId: string;
+        amount: number;
+        userType: "other";
+    };

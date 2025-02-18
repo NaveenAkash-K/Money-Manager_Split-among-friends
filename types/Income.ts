@@ -6,7 +6,7 @@ export interface Income {
     subCategory: object;
     name: string;
     amount: number;
-    type: "income";
+    type: TransactionTypes.Income;
     date: Date;
     description: string;
     account: string;

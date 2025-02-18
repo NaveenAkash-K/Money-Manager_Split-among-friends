@@ -1,16 +1,19 @@
 import {Share} from "./Share";
+import {TransactionTypes} from "./TransactionTypes";
+import Settlement from "./Settlement";
 
 export interface Expense {
-    id: string;
-    category: object;
-    subCategory: object;
+    readonly id: string;
+    category: string;
+    subCategory?: string;
     name: string;
     amount: number;
-    type: "expense";
+    type: TransactionTypes.Expense;
     date: Date;
-    description: string;
+    description?: string;
     accountType: string;
     split: boolean;
     shares: Share[];
-    createdAt: Date;
+    settlements:Settlement[];
+    readonly createdAt: Date;
 }
