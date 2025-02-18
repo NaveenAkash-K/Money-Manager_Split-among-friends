@@ -6,6 +6,7 @@ import Animated, {useSharedValue, useAnimatedStyle, withSpring} from "react-nati
 import {G, Text as SVGText} from "react-native-svg";
 import useTransactionsStore from "../../store/useTransactionsStore";
 import AccountTypes from "../../types/AccountTypes";
+import useBalanceStore from "../../store/useBalanceStore";
 
 const {width: SCREEN_WIDTH} = Dimensions.get("window");
 
@@ -15,19 +16,19 @@ const lighterShade = "#001f5b";
 
 const AccountsChart = () => {
     const [chartType, setChartType] = useState("Expense");
-    const {getTotalIncome, getTotalExpense} = useTransactionsStore();
+    const {Cash, Card, Account} = useBalanceStore()
     const translateX = useSharedValue(0);
 
     const expenseData = [
-        {value: getTotalExpense(undefined, AccountTypes.Cash), svg: {fill: primaryColor}, key: "Cash"},
-        {value: getTotalExpense(undefined, AccountTypes.Account), svg: {fill: lighterShade}, key: "Account"},
-        {value: getTotalExpense(undefined, AccountTypes.Card), svg: {fill: darkerShade}, key: "Card"},
+        {value: Cash.expense, svg: {fill: primaryColor}, key: "Cash"},
+        {value: Account.expense, svg: {fill: lighterShade}, key: "Account"},
+        {value: Card.expense, svg: {fill: darkerShade}, key: "Card"},
     ];
 
     const incomeData = [
-        {value: getTotalIncome(undefined, AccountTypes.Cash), svg: {fill: primaryColor}, key: "Cash"},
-        {value: getTotalIncome(undefined, AccountTypes.Account), svg: {fill: lighterShade}, key: "Account"},
-        {value: getTotalIncome(undefined, AccountTypes.Card), svg: {fill: darkerShade}, key: "Card"},
+        {value: Cash.income, svg: {fill: primaryColor}, key: "Cash"},
+        {value: Account.income, svg: {fill: lighterShade}, key: "Account"},
+        {value: Card.income, svg: {fill: darkerShade}, key: "Card"},
     ];
 
     const totalExpense = expenseData.reduce((sum, item) => sum + item.value, 0);

@@ -41,40 +41,40 @@ const TransactionTypeSelectorChips = () => {
                 color: selectedTransactionType === TransactionTypes.Expense ? Colors.expense.main : Colors.grey["700"]
             }}>Expense</Text>
         </Pressable>
-        <Pressable
-            onPress={() => {
-                setValue({field: "selectedTransactionType", value: TransactionTypes.Transfer})
-            }}
-            style={{
-                borderWidth: 1.5,
-                borderColor: selectedTransactionType === TransactionTypes.Transfer ? "#3b5fff" : Colors.grey["700"],
-                paddingVertical: 5,
-                borderRadius: 8,
-                flex: 1
-            }}><Text
-            style={{
-                textAlign: "center",
-                fontWeight: "500",
-                color: selectedTransactionType === TransactionTypes.Transfer ? "#3b5fff" : Colors.grey["700"]
-            }}>Transfer</Text>
-        </Pressable>
-        <Pressable
-            onPress={() => {
-                setValue({field: "selectedTransactionType", value: TransactionTypes.Debt})
-            }}
-            style={{
-                borderWidth: 1.5,
-                borderColor: selectedTransactionType === TransactionTypes.Debt ? "#3b5fff" : Colors.grey["700"],
-                paddingVertical: 5,
-                borderRadius: 8,
-                flex: 1
-            }}><Text
-            style={{
-                textAlign: "center",
-                fontWeight: "500",
-                color: selectedTransactionType === TransactionTypes.Debt ? "#3b5fff" : Colors.grey["700"]
-            }}>Debt</Text>
-        </Pressable>
+        {/*<Pressable*/}
+        {/*    onPress={() => {*/}
+        {/*        setValue({field: "selectedTransactionType", value: TransactionTypes.Transfer})*/}
+        {/*    }}*/}
+        {/*    style={{*/}
+        {/*        borderWidth: 1.5,*/}
+        {/*        borderColor: selectedTransactionType === TransactionTypes.Transfer ? "#3b5fff" : Colors.grey["700"],*/}
+        {/*        paddingVertical: 5,*/}
+        {/*        borderRadius: 8,*/}
+        {/*        flex: 1*/}
+        {/*    }}><Text*/}
+        {/*    style={{*/}
+        {/*        textAlign: "center",*/}
+        {/*        fontWeight: "500",*/}
+        {/*        color: selectedTransactionType === TransactionTypes.Transfer ? "#3b5fff" : Colors.grey["700"]*/}
+        {/*    }}>Transfer</Text>*/}
+        {/*</Pressable>*/}
+        {/*<Pressable*/}
+        {/*    onPress={() => {*/}
+        {/*        setValue({field: "selectedTransactionType", value: TransactionTypes.Debt})*/}
+        {/*    }}*/}
+        {/*    style={{*/}
+        {/*        borderWidth: 1.5,*/}
+        {/*        borderColor: selectedTransactionType === TransactionTypes.Debt ? "#3b5fff" : Colors.grey["700"],*/}
+        {/*        paddingVertical: 5,*/}
+        {/*        borderRadius: 8,*/}
+        {/*        flex: 1*/}
+        {/*    }}><Text*/}
+        {/*    style={{*/}
+        {/*        textAlign: "center",*/}
+        {/*        fontWeight: "500",*/}
+        {/*        color: selectedTransactionType === TransactionTypes.Debt ? "#3b5fff" : Colors.grey["700"]*/}
+        {/*    }}>Debt</Text>*/}
+        {/*</Pressable>*/}
     </View>
 }
 

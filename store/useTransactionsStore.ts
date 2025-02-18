@@ -16,6 +16,8 @@ import transactionsStoreSerializer from "../utils/transactionsStoreSerializer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import transaction from "../models/Transaction";
 import {plainToClass, plainToInstance} from "class-transformer";
+import useBalanceStore from "./useBalanceStore";
+import transactionTypes from "../types/TransactionTypes";
 
 interface TransactionState {
     transactions: Transaction[];
@@ -35,16 +37,36 @@ const useTransactionsStore = create<TransactionState>()(
             transactions: [],
 
             // Add Transaction
-            addTransaction: (transaction) =>
+            addTransaction: (transaction) => {
+                const {updateBalance} = useBalanceStore.getState();
+                updateBalance(transaction.accountType, transaction.type, transaction.amount);
                 set((state) => ({
                     transactions: [...state.transactions, transaction],
-                })),
-            removeTransaction: (transactionId) =>
-                set((state) => ({
-                    transactions: state.transactions.filter(
-                        (transaction) => transaction.id !== transactionId
-                    ),
-                })),
+                }))
+            },
+            removeTransaction: (transactionId) => {
+                const {updateBalance} = useBalanceStore.getState();
+
+                set((state) => {
+                    const transactionToRemove = state.transactions.find(
+                        (transaction) => transaction.id === transactionId
+                    );
+
+                    if (!transactionToRemove) return state; // If transaction not found, return the current state
+
+                    const {accountType, type, amount} = transactionToRemove;
+
+                    // Reverse the transaction effect to restore the balance
+                    updateBalance(accountType, type, amount);
+
+                    return {
+                        transactions: state.transactions.filter(
+                            (transaction) => transaction.id !== transactionId
+                        ),
+                    };
+                });
+            },
+
             getTotalIncome: (transactionDate, accountType) => {
                 const transactions = get().transactions;
 

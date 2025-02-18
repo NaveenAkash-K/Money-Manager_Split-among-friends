@@ -7,15 +7,15 @@ import Colors from "../constants/Colors";
 
 const Tab = createMaterialTopTabNavigator();
 
-const CategorySection = ({categoryType}: { categoryType: string; }) => {
+const CategorySection = (props) => {
     const {categories} = useCategoriesStore();
     const {subCategories} = useSubCategoriesStore();
 
     return (
         <ScrollView>
             <View style={styles.container}>
-                <Text style={styles.categoryTitle}>{categoryType}</Text>
-                {categories?.[categoryType]?.map((category) => (
+                <Text style={styles.categoryTitle}>{props.categoryType}</Text>
+                {categories?.[props.categoryType]?.map((category) => (
                     <View key={category.id} style={styles.categoryCard}>
                         <Text style={styles.categoryName}>{category.name}</Text>
                         <View style={styles.subCategoryList}>

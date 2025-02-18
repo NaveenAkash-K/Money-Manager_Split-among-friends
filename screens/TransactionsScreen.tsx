@@ -14,6 +14,7 @@ import useNonPersistStore from "../store/useNonPersistStore";
 import filterTransactions from "../utils/filterTransactions";
 import uuid from "react-native-uuid";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import useBalanceStore from "../store/useBalanceStore";
 
 const TransactionsScreen = () => {
     // Static plain object array for transactions
@@ -23,14 +24,14 @@ const TransactionsScreen = () => {
     const {clearForm} = useTransactionFormStore();
     const [filteredTransactions, setFilteredTransactions] = useState(transactions);
 
-    const {
-        getTotalIncome,
-        getTotalExpense,
-        getTotalBalanceAfterSettlement,
-        getTotalPayableDebt,
-        getTotalReceivableDebt,
-        getTotalBalance
-    } = useTransactionsStore();
+
+    const {Card, Account, Cash} = useBalanceStore();
+
+    useEffect(() => {
+        console.log(Cash)
+        console.log(Account)
+        console.log(Card)
+    }, [Cash, Account, Card]);
 
     useEffect(() => {
         const filtered = filterTransactions(transactions, transactionDate);

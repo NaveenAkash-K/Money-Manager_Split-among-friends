@@ -1,14 +1,14 @@
 import React, {useState} from "react";
 import {View, Text, StyleSheet, Dimensions} from "react-native";
-import {PieChart} from "react-native-svg-charts";
-import {G, Text as SVGText} from "react-native-svg";
-import {PanGestureHandler} from "react-native-gesture-handler";
+// import {G, Text as SVGText} from "react-native-svg";
+// import {PanGestureHandler} from "react-native-gesture-handler";
 import Animated, {useSharedValue, useAnimatedStyle, withSpring} from "react-native-reanimated";
 import Colors from "../constants/Colors";
 import useTransactionsStore from "../store/useTransactionsStore";
 import AccountTypes from "../types/AccountTypes";
 import StatsRow from "../components/common/StatsRow";
 import AccountsChart from "../components/accountsScreen/AccountsChart";
+import useBalanceStore from "../store/useBalanceStore";
 
 const {width: SCREEN_WIDTH} = Dimensions.get("window");
 
@@ -19,9 +19,9 @@ const lighterShade = "#001f5b";
 const AccountsScreen = () => {
     const [chartType, setChartType] = useState("Expense"); // Track current chart type
     const {getTotalIncome, getTotalExpense, getTotalBalance} = useTransactionsStore();
+    const {Cash, Card, Account} = useBalanceStore()
     const translateX = useSharedValue(0);
 
-    console.log(getTotalIncome(undefined, AccountTypes.Cash))
 
     return (
         <View>
@@ -38,10 +38,10 @@ const AccountsScreen = () => {
                         backgroundColor: Colors.grey["200"]
                     }}>Card</Text>
                     <StatsRow
-                        totalIncome={getTotalIncome(undefined, AccountTypes.Card)}
-                        totalExpense={getTotalExpense(undefined, AccountTypes.Card)}
-                        cashflow={parseFloat((getTotalIncome(undefined, AccountTypes.Card) - getTotalExpense(undefined, AccountTypes.Card)).toFixed(1))}
-                        totalBalance={getTotalBalance(AccountTypes.Card)}
+                        totalIncome={Card.income}
+                        totalExpense={Card.expense}
+                        cashflow={Card.cashflow}
+                        totalBalance={Card.balance}
                     />
                 </View>
 
@@ -56,10 +56,10 @@ const AccountsScreen = () => {
                         backgroundColor: Colors.grey["200"]
                     }}>Cash</Text>
                     <StatsRow
-                        totalIncome={getTotalIncome(undefined, AccountTypes.Cash)}
-                        totalExpense={getTotalExpense(undefined, AccountTypes.Cash)}
-                        cashflow={parseFloat((getTotalIncome(undefined, AccountTypes.Cash) - getTotalExpense(undefined, AccountTypes.Cash)).toFixed(1))}
-                        totalBalance={getTotalBalance(AccountTypes.Cash)}
+                        totalIncome={Cash.income}
+                        totalExpense={Cash.expense}
+                        cashflow={Cash.cashflow}
+                        totalBalance={Cash.balance}
                     />
                 </View>
 
@@ -74,10 +74,10 @@ const AccountsScreen = () => {
                         backgroundColor: Colors.grey["200"]
                     }}>Accounts</Text>
                     <StatsRow
-                        totalIncome={getTotalIncome(undefined, AccountTypes.Account)}
-                        totalExpense={getTotalExpense(undefined, AccountTypes.Account)}
-                        cashflow={parseFloat((getTotalIncome(undefined, AccountTypes.Account) - getTotalExpense(undefined, AccountTypes.Account)).toFixed(1))}
-                        totalBalance={getTotalBalance(AccountTypes.Account)}
+                        totalIncome={Account.income}
+                        totalExpense={Account.expense}
+                        cashflow={Account.cashflow}
+                        totalBalance={Account.balance}
                     />
                 </View>
             </View>

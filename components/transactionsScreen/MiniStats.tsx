@@ -6,7 +6,8 @@ import useTransactionsStore from "../../store/useTransactionsStore";
 import Income from "../../models/Income";
 import Expense from "../../models/Expense";
 import useNonPersistStore from "../../store/useNonPersistStore";
-import StatsRow from "../common/StatsRow"; // Make sure to install this package
+import StatsRow from "../common/StatsRow";
+import useBalanceStore from "../../store/useBalanceStore"; // Make sure to install this package
 
 const MiniStats = () => {
     const [expanded, setExpanded] = useState(false); // State to track whether the debt details are expanded
@@ -14,11 +15,9 @@ const MiniStats = () => {
     const {
         getTotalIncome,
         getTotalExpense,
-        getTotalBalanceAfterSettlement,
-        getTotalPayableDebt,
-        getTotalReceivableDebt,
-        getTotalBalance
     } = useTransactionsStore();
+
+    const {Card, Cash, Account} = useBalanceStore();
 
     const {transactionDate} = useNonPersistStore()
 
@@ -38,39 +37,39 @@ const MiniStats = () => {
                 totalIncome={getTotalIncome(transactionDate)}
                 totalExpense={getTotalExpense(transactionDate)}
                 cashflow={getTotalIncome(transactionDate) - getTotalExpense(transactionDate)}
-                totalBalance={getTotalBalance()}
+                totalBalance={Card.balance + Cash.balance + Account.balance}
             />
 
-            <View style={styles.detailsContainer}>
-                <Animated.View style={[styles.debtDetails, {height: heightAnim}]}>
-                    <Text style={styles.debtTitle}>Total Debts</Text>
-                    <View style={styles.debtRow}>
-                        <View style={styles.debtItem}>
-                            <Text style={styles.debtLabel}>Others owes you</Text>
-                            <Text
-                                style={[styles.debtValue, {color: Colors.income.light}]}>₹ {getTotalReceivableDebt()}</Text>
-                        </View>
-                        <View style={styles.debtItem}>
-                            <Text style={styles.debtLabel}>You owe others</Text>
-                            <Text
-                                style={[styles.debtValue, {color: Colors.expense.light}]}>₹ {getTotalPayableDebt()}</Text>
-                        </View>
-                        <View style={styles.debtItem}>
-                            <Text style={styles.debtLabel}>Total Balance</Text>
-                            <Text style={styles.debtValue}>₹ {getTotalBalanceAfterSettlement()}</Text>
-                            <Text style={styles.debtSubLabel}>(After settlement)</Text>
-                        </View>
-                    </View>
-                </Animated.View>
+            {/*<View style={styles.detailsContainer}>*/}
+            {/*    <Animated.View style={[styles.debtDetails, {height: heightAnim}]}>*/}
+            {/*        <Text style={styles.debtTitle}>Total Debts</Text>*/}
+            {/*        <View style={styles.debtRow}>*/}
+            {/*            <View style={styles.debtItem}>*/}
+            {/*                <Text style={styles.debtLabel}>Others owes you</Text>*/}
+            {/*                <Text*/}
+            {/*                    style={[styles.debtValue, {color: Colors.income.light}]}>₹ {getTotalReceivableDebt()}</Text>*/}
+            {/*            </View>*/}
+            {/*            <View style={styles.debtItem}>*/}
+            {/*                <Text style={styles.debtLabel}>You owe others</Text>*/}
+            {/*                <Text*/}
+            {/*                    style={[styles.debtValue, {color: Colors.expense.light}]}>₹ {getTotalPayableDebt()}</Text>*/}
+            {/*            </View>*/}
+            {/*            <View style={styles.debtItem}>*/}
+            {/*                <Text style={styles.debtLabel}>Total Balance</Text>*/}
+            {/*                <Text style={styles.debtValue}>₹ {getTotalBalanceAfterSettlement()}</Text>*/}
+            {/*                <Text style={styles.debtSubLabel}>(After settlement)</Text>*/}
+            {/*            </View>*/}
+            {/*        </View>*/}
+            {/*    </Animated.View>*/}
 
-                <TouchableOpacity onPress={toggleDebtDetails} style={styles.arrowButtonContainer}>
-                    <MaterialIcons
-                        name={expanded ? 'keyboard-arrow-up' : 'keyboard-arrow-down'}
-                        size={24}
-                        color="black"
-                    />
-                </TouchableOpacity>
-            </View>
+            {/*    <TouchableOpacity onPress={toggleDebtDetails} style={styles.arrowButtonContainer}>*/}
+            {/*        <MaterialIcons*/}
+            {/*            name={expanded ? 'keyboard-arrow-up' : 'keyboard-arrow-down'}*/}
+            {/*            size={24}*/}
+            {/*            color="black"*/}
+            {/*        />*/}
+            {/*    </TouchableOpacity>*/}
+            {/*</View>*/}
         </View>
     );
 };
@@ -84,6 +83,8 @@ const styles = StyleSheet.create({
         shadowOffset: {width: 0, height: 10},
         borderColor: Colors.grey["400"],
         shadowColor: Colors.grey["400"],
+
+        paddingBottom: 25,
     },
     topRow: {
         flexDirection: 'row',
